@@ -1,0 +1,14 @@
+-- CREATE DATABASE IF NOT EXISTS  'STOCK';
+
+CREATE TABLE `stock` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `ticker` varchar(50) NOT NULL COMMENT 'ticker',
+  `date` VARCHAR(50) NOT NULL COMMENT 'date',
+  `time` VARCHAR(20) DEFAULT NULL COMMENT 'time',
+  `open` VARCHAR(50) DEFAULT NULL COMMENT 'open',
+  `high` VARCHAR(20) DEFAULT NULL COMMENT 'high',
+  `low` VARCHAR(50) DEFAULT NULL COMMENT 'low',
+  `close` VARCHAR(50) DEFAULT NULL COMMENT 'close',
+  `vol` VARCHAR(50) DEFAULT NULL COMMENT 'vol',
+  PRIMARY KEY (`id`)
+);

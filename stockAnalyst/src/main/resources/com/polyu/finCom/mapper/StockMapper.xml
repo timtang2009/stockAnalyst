@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.polyu.finCom.Mapper.StockMapper">
+
+    <!--根据id查询数据-->
+    <select id="findStockById" parameterType="int" resultType="Stock">
+        select * from stock where id = #{id}
+    </select>
+
+    <update id="createNewTable" parameterType="string">
+        CREATE TABLE IF NOT EXISTS ${table} (
+                                 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                 `ticker` varchar(50) NOT NULL COMMENT 'ticker',
+                                 `date` VARCHAR(50) NOT NULL COMMENT 'date',
+                                 `time` VARCHAR(20) DEFAULT NULL COMMENT 'time',
+                                 `open` VARCHAR(50) DEFAULT NULL COMMENT 'open',
+                                 `high` VARCHAR(20) DEFAULT NULL COMMENT 'high',
+                                 `low` VARCHAR(50) DEFAULT NULL COMMENT 'low',
+                                 `close` VARCHAR(50) DEFAULT NULL COMMENT 'close',
+                                 `vol` VARCHAR(50) DEFAULT NULL COMMENT 'vol',
+                                 PRIMARY KEY (`id`)
+        )
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true">
+        INSERT  INTO  stock(`id`,`ticker`,`date`) values('2','123','234')
+    </insert>
+
+    <!--&lt;!&ndash;查询所有数据&ndash;&gt;-->
+    <!--<select id="findAllUser" resultType="User">-->
+        <!--SELECT * from t_user-->
+    <!--</select>-->
+
+    <!--&lt;!&ndash;插入数据&ndash;&gt;-->
+    <!--<insert id="addUser" parameterType="User" keyProperty="id" useGeneratedKeys="true">-->
+        <!--INSERT  INTO  t_user(username,password) values(#{username},#{password})-->
+    <!--</insert>-->
+
+    <!--&lt;!&ndash;删除数据&ndash;&gt;-->
+    <!--<delete id="deleteUserById" parameterType="int">-->
+        <!--DELETE  from t_user WHERE  id= #{id}-->
+    <!--</delete>-->
+
+    <!--<update id="updateUser" parameterType="User" useGeneratedKeys="true" keyProperty="id" >-->
+        <!--UPDATE t_user SET username=#{username},password=#{password}-->
+        <!--WHERE id=#{id}-->
+    <!--</update>-->
+</mapper>

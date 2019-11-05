@@ -1,17 +1,16 @@
 package com.polyu.finCom.stockAnalyst;
 
 
-import com.polyu.finCom.Toaster.Toaster;
-import com.polyu.finCom.Utils.UIUtils;
+import com.polyu.finCom.Mapper.StockMapper;
+import com.polyu.finCom.Model.Stock;
+import com.polyu.finCom.Toaster.GetSessionFactory;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class StockAnalystPanel {
 
@@ -29,6 +28,15 @@ public class StockAnalystPanel {
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.setLocationRelativeTo(null);
 
+        SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        mapper.createNewTable("stock");
+        mapper.insert();
+        Stock stock = mapper.findStockById(2);
+        System.out.println(stock.getDate());
+        sqlSession.close();
+
         // 创建选项卡面板
         final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -40,7 +48,6 @@ public class StockAnalystPanel {
 
         // 添加选项卡选中状态改变的监听器
         tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
             public void stateChanged(ChangeEvent e) {
             }
         });
