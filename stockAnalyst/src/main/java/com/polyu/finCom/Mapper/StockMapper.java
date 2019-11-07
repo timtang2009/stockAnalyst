@@ -9,5 +9,5 @@ public interface StockMapper {
 
     void createNewTable(@Param("table") String table);
 
-    void insert();
+    void insert(Stock stock);
 }

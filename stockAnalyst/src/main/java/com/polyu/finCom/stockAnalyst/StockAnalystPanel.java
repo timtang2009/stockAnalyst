@@ -32,7 +32,6 @@ public class StockAnalystPanel {
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         mapper.createNewTable("stock");
-        mapper.insert();
         Stock stock = mapper.findStockById(2);
         System.out.println(stock.getDate());
         sqlSession.close();

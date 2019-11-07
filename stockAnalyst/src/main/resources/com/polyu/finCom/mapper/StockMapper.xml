@@ -24,8 +24,10 @@
         )
     </update>
 
-    <insert id="insert" useGeneratedKeys="true">
-        INSERT  INTO  stock(`id`,`ticker`,`date`) values('2','123','234')
+    <insert id="insert">
+        INSERT INTO stock(`ticker`,`date`,`time`,`open`,`high`,`low`,`close`,`vol`)
+        VALUES
+        (#{ticker},#{date},#{time},#{open},#{high},#{low},#{close},#{vol});
     </insert>
 
     <!--&lt;!&ndash;查询所有数据&ndash;&gt;-->
