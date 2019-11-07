@@ -48,6 +48,7 @@ public class Toaster {
                 }
                 lineNum ++;
             }
+            sqlSession.close();
         } catch (Exception e) {
             logger.error("fail to read File from {}", path);
         }
