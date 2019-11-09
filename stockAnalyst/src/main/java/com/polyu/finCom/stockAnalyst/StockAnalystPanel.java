@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.logging.Logger;
 
 public class StockAnalystPanel {
 
@@ -21,6 +22,8 @@ public class StockAnalystPanel {
     // 获取txt文件变量
     private static File[] files;
 
+    // Logger
+    //private static Logger logger = Logger.getLogger(StockAnalystPanel.class.getName());
     /**
      * Main Start
      */
@@ -40,7 +43,7 @@ public class StockAnalystPanel {
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         mapper.createNewTable("stock");
         Stock stock = mapper.findStockById(2);
-        System.out.println(stock.getDate());
+        //System.out.println(stock.getDate());
         sqlSession.close();
 
         // 创建选项卡面板
