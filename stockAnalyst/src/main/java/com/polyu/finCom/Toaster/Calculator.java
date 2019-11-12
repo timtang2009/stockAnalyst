@@ -14,6 +14,20 @@ public class Calculator {
         return sum.divide(new BigDecimal(datas.size()));
     }
 
+    //计算收益率
+    public double getInterest(double t, double t_1) {
+        return Math.log(t) - Math.log(t_1);
+    }
+
+    //计算组合收益率
+    public double getBatchInterest(List<Double> ins, List<Double> weighs) {
+        double batchInterest = 0.0;
+        for (int i = 0; i < ins.size(); i++) {
+            batchInterest += ins.get(i) * weighs.get(i);
+        }
+        return batchInterest;
+    }
+
     //计算方差
     public BigDecimal getVariance(List<BigDecimal> datas) {
         BigDecimal average = this.getExpectation(datas);
@@ -46,11 +60,11 @@ public class Calculator {
         return ans / (v1.length - 1);
     }
 
-    public double mean(double[] v) {
+    private double mean(double[] v) {
         return (mass(v) / (double) v.length);
     }
 
-    public double mass(double[] v) {
+    private double mass(double[] v) {
         double somme = 0.0;
         for (int k = 0; k < v.length; k++) {
             somme += v[k];
