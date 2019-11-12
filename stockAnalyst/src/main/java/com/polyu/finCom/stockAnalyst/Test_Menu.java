@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.lang.annotation.Retention;
 
 public class Test_Menu implements ActionListener {
@@ -91,11 +92,11 @@ public class Test_Menu implements ActionListener {
         return panel;
     }
 
+    //菜单栏的逻辑判断
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == openMenuItem){
-            jFrame.setContentPane(createTextPanel("Open"));
-            jFrame.revalidate();
+            showFileOpenDialog(jFrame);
 
         }else if (source == loadMenuItem){
             jFrame.setContentPane(createTextPanel("Load"));
@@ -116,6 +117,36 @@ public class Test_Menu implements ActionListener {
         }else if (source == Optimize_PortfolioMenuItem){
             jFrame.setContentPane(createTextPanel("Optimize"));
             jFrame.revalidate();
+
+        }
+    }
+
+    private static void showFileOpenDialog(Component parent){
+        File[] files;
+
+        // 创建一个默认的文件选取器
+        JFileChooser fileChooser = new JFileChooser();
+
+        // 设置默认显示的文件夹为当前文件夹
+        fileChooser.setCurrentDirectory(new File("."));
+
+        // 设置文件选择的模式（文件和文件夹均可选）
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        // 设置是否允许多选
+        fileChooser.setMultiSelectionEnabled(true);
+
+        // 打开文件选择框（线程将被阻塞，知道选择框被关闭）
+        int result = fileChooser.showOpenDialog(parent);
+
+        if (result == JFileChooser.APPROVE_OPTION){
+            // 如果点击了“确定”，则获取选择的文件路径
+            //File file = fileChooser.getSelectedFile();
+
+            // 如果选择多个文件，则通过下面方法获取选择的所有文件
+            files = fileChooser.getSelectedFiles();
+            for (int i = 0; i < files.length; i++) {
+                System.out.println(files[i].getAbsolutePath());
+            }
 
         }
 
