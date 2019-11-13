@@ -27,6 +27,18 @@ public class Test_Menu implements ActionListener {
     private JMenuItem Recommend_PortfolioMenuItem;
     private JMenuItem Optimize_PortfolioMenuItem;
 
+    //文件Absolute path的String数组
+    private String[] files_absolute_path;
+
+    //Absolute_path的get、set方法
+    public String[] getFiles_absolute_path() {
+        return files_absolute_path;
+    }
+
+    public void setFiles_absolute_path(String[] files_absolute_path) {
+        this.files_absolute_path = files_absolute_path;
+    }
+
     public Test_Menu(){
         //创建菜单栏
         menuBar = new JMenuBar();
@@ -121,8 +133,17 @@ public class Test_Menu implements ActionListener {
         }
     }
 
-    private static void showFileOpenDialog(Component parent){
+    /*
+     *创建一个文件选择器
+     * 放在open菜单中
+     * 功能：导入文件并返回一个String类型数组列明选中文件的absolute path
+     *
+     */
+
+    private void showFileOpenDialog(Component parent){
         File[] files;
+        String[] files_absolute_path;
+        String[] files_test;
 
         // 创建一个默认的文件选取器
         JFileChooser fileChooser = new JFileChooser();
@@ -144,10 +165,23 @@ public class Test_Menu implements ActionListener {
 
             // 如果选择多个文件，则通过下面方法获取选择的所有文件
             files = fileChooser.getSelectedFiles();
+            files_absolute_path = new String[files.length];
             for (int i = 0; i < files.length; i++) {
-                System.out.println(files[i].getAbsolutePath());
+                files_absolute_path[i] = files[i].getAbsolutePath();
+
+            }
+            //保存文件
+            setFiles_absolute_path(files_absolute_path);
+
+            //测试
+            files_test = getFiles_absolute_path();
+            for (int i = 0; i < files.length; i++) {
+
+                System.out.println(files_test[i]);
             }
 
+            //消息对话框提示保存成功
+            JOptionPane.showMessageDialog(parent,"Files saved successfully","Notification",JOptionPane.INFORMATION_MESSAGE);
         }
 
     }
