@@ -10,6 +10,7 @@ public class Stock {
     private String high;
     private String low;
     private String close;
+    private String returnRate;
     private String vol;
 
     public Integer getId() {
@@ -18,6 +19,15 @@ public class Stock {
 
     public Stock setId(Integer id) {
         this.id = id;
+        return this;
+    }
+
+    public String getReturnRate() {
+        return returnRate;
+    }
+
+    public Stock setReturnRate(String returnRate) {
+        this.returnRate = returnRate;
         return this;
     }
 

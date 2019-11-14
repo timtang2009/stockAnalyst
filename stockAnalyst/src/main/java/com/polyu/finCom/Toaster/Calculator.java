@@ -1,22 +1,40 @@
 package com.polyu.finCom.Toaster;
 
-import java.math.BigDecimal;
+import com.polyu.finCom.Model.StockInfo;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calculator {
 
     //计算均值
-    public BigDecimal getExpectation(List<BigDecimal> datas) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (BigDecimal data : datas) {
-            sum = sum.add(data);
+    public Double getExpectation(List<Double> datas) {
+        double sum = 0.0;
+        for (Double data : datas) {
+            sum += data;
         }
-        return sum.divide(new BigDecimal(datas.size()));
+        return sum / datas.size();
     }
 
     //计算收益率
     public double getInterest(double t, double t_1) {
         return Math.log(t) - Math.log(t_1);
+    }
+
+    //计算平均收益率
+    public StockInfo AveIntRate(StockInfo stockInfo, List<String> rates) {
+        if (rates == null || rates.size() < 2)
+            return null;
+        double sum = 0.0;
+        List<Double> dailyRR = new ArrayList<>();
+        for (int i = 0; i < rates.size() - 1; i++) {
+            double dailyRate = this.getInterest(Double.valueOf(rates.get(i + 1)), Double.valueOf(rates.get(i)));
+            dailyRR.add(dailyRate);
+            sum += dailyRate;
+        }
+        stockInfo.setReturnRate(sum / (rates.size() - 1));
+        stockInfo.setRisk(this.getStandard(dailyRR, sum / (rates.size() - 1)));
+        return stockInfo;
     }
 
     //计算组合收益率
@@ -29,21 +47,20 @@ public class Calculator {
     }
 
     //计算方差
-    public BigDecimal getVariance(List<BigDecimal> datas) {
-        BigDecimal average = this.getExpectation(datas);
-
-        BigDecimal variance = BigDecimal.ZERO;
-        for (BigDecimal p : datas) {
-            BigDecimal square = average.subtract(p).multiply(average.subtract(p));
-            variance = variance.add(square);
+    public Double getVariance(List<Double> datas, Double average) {
+        average = average == null ? this.getExpectation(datas): average;
+        double variance = 0.0;
+        for (Double p : datas) {
+            double square = (average - p) * (average - p);
+            variance = variance + square;
         }
-        return variance.divide(new BigDecimal(datas.size()));
+        return variance / datas.size();
     }
 
     //计算标准差
-    public BigDecimal getStandard(List<BigDecimal> datas) {
-        double st = Math.sqrt(this.getVariance(datas).doubleValue());
-        return new BigDecimal(st);
+    public Double getStandard(List<Double> datas, Double average) {
+        double st = Math.sqrt(this.getVariance(datas, average));
+        return st;
     }
 
     //计算协方差

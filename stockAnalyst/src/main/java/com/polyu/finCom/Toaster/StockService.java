@@ -1,7 +1,6 @@
 package com.polyu.finCom.Toaster;
 
 import com.polyu.finCom.Mapper.StockMapper;
-import com.polyu.finCom.Model.Stock;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -14,11 +13,8 @@ public class StockService {
         return mapper;
     }
 
-    public Stock getStockById(Integer id) {
-        return getMapper().findStockById(id);
-    }
-
     public void createTable() {
         getMapper().createNewTable("stock");
     }
+
 }

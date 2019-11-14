@@ -16,6 +16,8 @@ public class Toaster {
 
     private static Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
 
+    private Calculator calculator = new Calculator();
+
     public String readFile(String path) {
         try {
             SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
@@ -27,6 +29,7 @@ public class Toaster {
             String line = "";
             line = br.readLine();
             int lineNum = 0;
+            double close = 0.0;
             while (line != null) {
                 line = br.readLine();
                 if (!line.startsWith("Ticker")) {
@@ -34,7 +37,6 @@ public class Toaster {
                     if (datas.length != 8) {
                         throw new Exception("please check file in line " + lineNum);
                     }
-
                     Stock stock = new Stock();
                     stock.setTicker(datas[0])
                             .setDate(datas[1])
@@ -44,7 +46,11 @@ public class Toaster {
                             .setLow(datas[5])
                             .setClose(datas[6])
                             .setVol(datas[7]);
+                    if (close != 0.0) {
+                        stock.setReturnRate(String.valueOf(calculator.getInterest(Double.valueOf(datas[6]), close)));
+                    }
                     mapper.insert(stock);
+                    close = Double.valueOf(datas[6]);
                 }
                 lineNum ++;
             }

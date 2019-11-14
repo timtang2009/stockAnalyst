@@ -5,8 +5,12 @@
 <mapper namespace="com.polyu.finCom.Mapper.StockMapper">
 
     <!--根据id查询数据-->
-    <select id="findStockById" parameterType="int" resultType="Stock">
-        select * from stock where id = #{id}
+    <select id="findStockByTicker" resultType="Stock">
+        select * from stock where ticker=#{ticker} and `date` between #{start} and #{end} order by `date` asc;
+    </select>
+
+    <select id="findStockByDate" resultType="Stock">
+        select * from stock where `date` = #{date};
     </select>
 
     <update id="createNewTable" parameterType="string">
@@ -19,6 +23,7 @@
                                  `high` VARCHAR(20) DEFAULT NULL COMMENT 'high',
                                  `low` VARCHAR(50) DEFAULT NULL COMMENT 'low',
                                  `close` VARCHAR(50) DEFAULT NULL COMMENT 'close',
+                                 `returnRate` VARCHAR(50) DEFAULT NULL COMMENT '当天收益率',
                                  `vol` VARCHAR(50) DEFAULT NULL COMMENT 'vol',
                                  PRIMARY KEY (`id`)
         )
@@ -29,6 +34,14 @@
         VALUES
         (#{ticker},#{date},#{time},#{open},#{high},#{low},#{close},#{vol});
     </insert>
+
+    <select id="getTickerList" resultType="java.lang.String">
+        SELECT distinct ticker FROM stock;
+    </select>
+
+    <select id="getStartEndDate" resultType="java.util.HashMap">
+        SELECT min(`date`) as `start`, max(`date`) as `end`  FROM stock where ticker=#{ticker};
+    </select>
 
     <!--&lt;!&ndash;查询所有数据&ndash;&gt;-->
     <!--<select id="findAllUser" resultType="User">-->

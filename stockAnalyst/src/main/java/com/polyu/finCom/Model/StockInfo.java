@@ -15,6 +15,10 @@ public class StockInfo {
     private Double risk;
     //β
     private Double beta;
+    //sharp ratio
+    private Double sharpRatio;
+    //
+    private Double riskFree;
 
     public String getTicker() {
         return ticker;
@@ -76,6 +80,24 @@ public class StockInfo {
 
     public StockInfo setBeta(Double beta) {
         this.beta = beta;
+        return this;
+    }
+
+    public Double getSharpRatio() {
+        return sharpRatio;
+    }
+
+    public StockInfo setSharpRatio(Double sharpRatio) {
+        this.sharpRatio = sharpRatio;
+        return this;
+    }
+
+    public Double getRiskFree() {
+        return riskFree;
+    }
+
+    public StockInfo setRiskFree(Double riskFree) {
+        this.riskFree = riskFree;
         return this;
     }
 }
