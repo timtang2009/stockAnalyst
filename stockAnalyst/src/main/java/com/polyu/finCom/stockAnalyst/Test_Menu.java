@@ -11,7 +11,7 @@ public class Test_Menu implements ActionListener {
     private static JFrame jFrame;
 
     //菜单栏
-    private static JMenuBar menuBar;
+    public static JMenuBar menuBar;
 
     //一级菜单
     private JMenu filemenu;
@@ -38,6 +38,9 @@ public class Test_Menu implements ActionListener {
     public void setFiles_absolute_path(String[] files_absolute_path) {
         this.files_absolute_path = files_absolute_path;
     }
+
+    //Load_panel
+    Load_panel_now load_panel_now;
 
     public Test_Menu(){
         //创建菜单栏
@@ -77,6 +80,8 @@ public class Test_Menu implements ActionListener {
         Recommend_PortfolioMenuItem.addActionListener(this);
         Optimize_PortfolioMenuItem.addActionListener(this);
 
+
+
     }
 
     public static void main(String[] args) {
@@ -85,6 +90,7 @@ public class Test_Menu implements ActionListener {
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Test_Menu test_menu = new Test_Menu();
+
         jFrame.setJMenuBar(menuBar);
         jFrame.setVisible(true);
     }
@@ -111,8 +117,9 @@ public class Test_Menu implements ActionListener {
             showFileOpenDialog(jFrame);
 
         }else if (source == loadMenuItem){
-            jFrame.setContentPane(createTextPanel("Load"));
+            jFrame.setContentPane(card());
             jFrame.revalidate();
+
 
         }else if (source == rankMenuItem){
             jFrame.setContentPane(createTextPanel("Rank"));
@@ -129,7 +136,6 @@ public class Test_Menu implements ActionListener {
         }else if (source == Optimize_PortfolioMenuItem){
             jFrame.setContentPane(createTextPanel("Optimize"));
             jFrame.revalidate();
-
         }
     }
 
@@ -182,8 +188,58 @@ public class Test_Menu implements ActionListener {
 
             //消息对话框提示保存成功
             JOptionPane.showMessageDialog(parent,"Files saved successfully","Notification",JOptionPane.INFORMATION_MESSAGE);
+            //第一次需导入文件后再打开load界面
+            load_panel_now = new Load_panel_now();
         }
 
+    }
+
+    private JComponent card(){
+        //创建卡片布局
+        final CardLayout layout = new CardLayout();
+        final JPanel panel = new JPanel(layout);
+        final JButton button1 = new JButton("跳转");
+
+        // 根据加入前后决定顺序
+        panel.add("1",load_panel_now.getPanel());
+        panel.add("2",button1);
+
+
+
+        //显示第一个
+        layout.show(panel,"1");
+        /*
+        *当点击show all details按钮
+        * 需要将界面信息全部发到后台进行计算
+        **/
+        load_panel_now.getShow_all_details().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                //跳转下个界面
+                //需要使用Stockinfo进行存取
+                if (source == load_panel_now.getShow_all_details()){
+                    System.out.println("Ticker information: " + load_panel_now.getTicker().getSelectedItem().toString());
+                    System.out.println("Start date: " + load_panel_now.getStart_date().getText());
+                    System.out.println("End date: " + load_panel_now.getEnd_date().getText());
+                    System.out.println("Return rate: " + load_panel_now.getReturn_rate().isSelected() + "\n");
+                    System.out.println("risk: " + load_panel_now.getRisk().isSelected() + "\n");
+                    System.out.println("Coeffiecient: " + load_panel_now.getCoefficient().isSelected() + "\n");
+                    System.out.println("K: " + load_panel_now.getK().isSelected() + "\n");
+                    layout.next(panel);
+                }
+            }
+        });
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                if (source == button1){
+                    layout.next(panel);
+                }
+            }
+        });
+        return panel;
     }
 }
 
