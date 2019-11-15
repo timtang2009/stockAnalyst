@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PanelService {
+public class
+PanelService {
 
     private Calculator calculator = new Calculator();
 
