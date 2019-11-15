@@ -208,7 +208,8 @@ public class Test_Menu implements ActionListener {
         final CardLayout layout = new CardLayout();
         final JPanel panel = new JPanel(layout);
         final JButton button1 = new JButton("跳转");
-
+        load_panel_now.setTicker(new String[]{"1", "2"});
+        load_panel_now.init();
         // 根据加入前后决定顺序
         panel.add("1",load_panel_now.getPanel());
         panel.add("2",load_panel_now_2.getjPanel());

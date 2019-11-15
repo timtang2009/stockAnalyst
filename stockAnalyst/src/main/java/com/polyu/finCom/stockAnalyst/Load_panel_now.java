@@ -9,7 +9,17 @@ import java.util.List;
 public class Load_panel_now {
 
         private JPanel panel;
-        private JComboBox<String> Ticker;
+
+    public void setTicker(String[] ticker_information ) {
+
+        if (ticker_information.toString() != null){
+            JComboBox<String> ticker = new JComboBox<String>(ticker_information);
+            Ticker = ticker;
+        }
+
+    }
+
+    private JComboBox<String> Ticker;
         private JLabel start_date_label;
         private JLabel end_date_label;
         private JTextField start_date;
@@ -67,20 +77,16 @@ public class Load_panel_now {
     }
 
     public Load_panel_now(){
-        init();
+        //init();
     }
 
-    private void init(){
+    public void init(){
         panel = new JPanel(null);
-        //转换Ticker类型
+        //Ticker初始元素
         String[] Ticker_information;
         Ticker_information = new String[]{"Nothing"};
-        /*if (panelService.getTickerList().toArray(new String[panelService.getTickerList().size()]).toString() == null){
-            Ticker_information = panelService.getTickerList().toArray(new String[panelService.getTickerList().size()]);
-        }*/
-
         //各元素初始化
-        Ticker = new JComboBox<String>(Ticker_information);
+        //Ticker = new JComboBox<String>();
         start_date_label = new JLabel("Start date");
         end_date_label = new JLabel("End date");
         start_date = new JTextField();
@@ -125,7 +131,7 @@ public class Load_panel_now {
         K.setSize(200,100);*/
 
         //Ticker默认选中项目
-        Ticker.setSelectedIndex(0);
+        //Ticker.setSelectedIndex(0);
 
         panel.add(Ticker);
         panel.add(start_date_label);
