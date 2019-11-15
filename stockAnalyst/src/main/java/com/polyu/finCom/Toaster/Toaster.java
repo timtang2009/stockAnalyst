@@ -32,7 +32,7 @@ public class Toaster {
             double close = 0.0;
             while (line != null) {
                 line = br.readLine();
-                if (!line.startsWith("Ticker")) {
+                if (line != null && !line.startsWith("Ticker")) {
                     String[] datas = line.split(",");
                     if (datas.length != 8) {
                         throw new Exception("please check file in line " + lineNum);
@@ -56,7 +56,7 @@ public class Toaster {
             }
             sqlSession.close();
         } catch (Exception e) {
-            logger.error("fail to read File from {}", path);
+            logger.error("fail to read File from {}", path, e);
         }
         return null;
     }

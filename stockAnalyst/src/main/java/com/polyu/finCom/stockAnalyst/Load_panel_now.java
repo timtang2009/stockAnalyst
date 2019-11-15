@@ -12,7 +12,7 @@ public class Load_panel_now {
 
     public void setTicker(String[] ticker_information ) {
 
-        if (ticker_information.toString() != null){
+        if (ticker_information != null){
             JComboBox<String> ticker = new JComboBox<String>(ticker_information);
             Ticker = ticker;
         }

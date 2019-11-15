@@ -30,9 +30,9 @@
     </update>
 
     <insert id="insert">
-        INSERT INTO stock(`ticker`,`date`,`time`,`open`,`high`,`low`,`close`,`vol`)
+        INSERT INTO stock(`ticker`,`date`,`time`,`open`,`high`, `returnRate`,`low`,`close`,`vol`)
         VALUES
-        (#{ticker},#{date},#{time},#{open},#{high},#{low},#{close},#{vol});
+        (#{ticker},#{date},#{time},#{open},#{high},#{returnRate},#{low},#{close},#{vol});
     </insert>
 
     <select id="getTickerList" resultType="java.lang.String">

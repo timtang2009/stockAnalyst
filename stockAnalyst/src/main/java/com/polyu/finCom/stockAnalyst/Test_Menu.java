@@ -1,14 +1,18 @@
 package com.polyu.finCom.stockAnalyst;
 
+import com.polyu.finCom.Mapper.StockMapper;
 import com.polyu.finCom.Model.StockInfo;
+import com.polyu.finCom.Toaster.GetSessionFactory;
 import com.polyu.finCom.Toaster.PanelService;
+import com.polyu.finCom.Toaster.Toaster;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.lang.annotation.Retention;
 
 public class Test_Menu implements ActionListener {
     private static JFrame jFrame;
@@ -32,6 +36,8 @@ public class Test_Menu implements ActionListener {
 
     //文件Absolute path的String数组
     private String[] files_absolute_path;
+
+    private Toaster toaster = new Toaster();
 
     //Absolute_path的get、set方法
     public String[] getFiles_absolute_path() {
@@ -89,8 +95,6 @@ public class Test_Menu implements ActionListener {
         Recommend_PortfolioMenuItem.addActionListener(this);
         Optimize_PortfolioMenuItem.addActionListener(this);
 
-
-
     }
 
     public static void main(String[] args) {
@@ -99,6 +103,11 @@ public class Test_Menu implements ActionListener {
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Test_Menu test_menu = new Test_Menu();
+        SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        mapper.createNewTable("stock");
+        sqlSession.close();
 
         jFrame.setJMenuBar(menuBar);
         jFrame.setVisible(true);
@@ -191,7 +200,7 @@ public class Test_Menu implements ActionListener {
             //测试
             files_test = getFiles_absolute_path();
             for (int i = 0; i < files.length; i++) {
-
+                toaster.readFile(files_test[i]);
                 System.out.println(files_test[i]);
             }
 
@@ -208,7 +217,10 @@ public class Test_Menu implements ActionListener {
         final CardLayout layout = new CardLayout();
         final JPanel panel = new JPanel(layout);
         final JButton button1 = new JButton("跳转");
-        load_panel_now.setTicker(new String[]{"1", "2"});
+        java.util.List<String> tickerList = panelService.getTickerList();
+        if (tickerList != null) {
+            load_panel_now.setTicker(tickerList.toArray(new String[tickerList.size()]));
+        }
         load_panel_now.init();
         // 根据加入前后决定顺序
         panel.add("1",load_panel_now.getPanel());
@@ -234,10 +246,15 @@ public class Test_Menu implements ActionListener {
                     System.out.println("End date: " + load_panel_now.getEnd_date().getText());
 
                     //Stockinfo存取
-                    //StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getStart_date().getText(),load_panel_now.getEnd_date().getText(),Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
-                    //load_panel_now_2.setStockInfo(stockInfo);
-                    //load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
-                    load_panel_now_2.create_form(2,2,2);
+                    StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),
+                            load_panel_now.getStart_date().getText(),
+                            load_panel_now.getEnd_date().getText(),
+                            Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
+                    if (stockInfo != null) {
+                        load_panel_now_2.setStockInfo(stockInfo);
+                        load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+//                        load_panel_now_2.create_form(2, 2, 2);
+                    }
                     //跳转下一界面
                     layout.next(panel);
                 }
