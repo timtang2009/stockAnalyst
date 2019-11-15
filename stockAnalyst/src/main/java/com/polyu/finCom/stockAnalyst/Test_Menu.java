@@ -1,5 +1,8 @@
 package com.polyu.finCom.stockAnalyst;
 
+import com.polyu.finCom.Model.StockInfo;
+import com.polyu.finCom.Toaster.PanelService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -40,7 +43,13 @@ public class Test_Menu implements ActionListener {
     }
 
     //Load_panel
-    Load_panel_now load_panel_now;
+    Load_panel_now load_panel_now = new Load_panel_now();
+
+    //Load_panel2
+    Load_panel_now_2 load_panel_now_2 = new Load_panel_now_2();
+
+    //PanelService
+    PanelService panelService = new PanelService();
 
     public Test_Menu(){
         //创建菜单栏
@@ -189,7 +198,7 @@ public class Test_Menu implements ActionListener {
             //消息对话框提示保存成功
             JOptionPane.showMessageDialog(parent,"Files saved successfully","Notification",JOptionPane.INFORMATION_MESSAGE);
             //第一次需导入文件后再打开load界面
-            load_panel_now = new Load_panel_now();
+            //load_panel_now = new Load_panel_now();
         }
 
     }
@@ -202,7 +211,7 @@ public class Test_Menu implements ActionListener {
 
         // 根据加入前后决定顺序
         panel.add("1",load_panel_now.getPanel());
-        panel.add("2",button1);
+        panel.add("2",load_panel_now_2.getjPanel());
 
 
 
@@ -222,10 +231,13 @@ public class Test_Menu implements ActionListener {
                     System.out.println("Ticker information: " + load_panel_now.getTicker().getSelectedItem().toString());
                     System.out.println("Start date: " + load_panel_now.getStart_date().getText());
                     System.out.println("End date: " + load_panel_now.getEnd_date().getText());
-                    System.out.println("Return rate: " + load_panel_now.getReturn_rate().isSelected() + "\n");
-                    System.out.println("risk: " + load_panel_now.getRisk().isSelected() + "\n");
-                    System.out.println("Coeffiecient: " + load_panel_now.getCoefficient().isSelected() + "\n");
-                    System.out.println("K: " + load_panel_now.getK().isSelected() + "\n");
+
+                    //Stockinfo存取
+                    //StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getStart_date().getText(),load_panel_now.getEnd_date().getText(),Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
+                    //load_panel_now_2.setStockInfo(stockInfo);
+                    //load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+                    load_panel_now_2.create_form(2,2,2);
+                    //跳转下一界面
                     layout.next(panel);
                 }
             }

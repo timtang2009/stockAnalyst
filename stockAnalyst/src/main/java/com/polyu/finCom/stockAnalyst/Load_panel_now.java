@@ -15,7 +15,12 @@ public class Load_panel_now {
         private JTextField start_date;
         private JTextField end_date;
         private JButton show_all_details;
-        private JCheckBox return_rate;
+        private JLabel risk_free_rate_label;
+        private JTextField risk_free_rate;
+
+
+
+    private JCheckBox return_rate;
         private JCheckBox risk;
         private JCheckBox coefficient;
         private JCheckBox K;
@@ -57,6 +62,10 @@ public class Load_panel_now {
         return K;
     }
 
+    public JTextField getRisk_free_rate() {
+        return risk_free_rate;
+    }
+
     public Load_panel_now(){
         init();
     }
@@ -64,8 +73,12 @@ public class Load_panel_now {
     private void init(){
         panel = new JPanel(null);
         //转换Ticker类型
-        //String[] Ticker_information = panelService.getTickerList().toArray(new String[panelService.getTickerList().size()]);
-        String[] Ticker_information = {"1","2"};
+        String[] Ticker_information;
+        Ticker_information = new String[]{"Nothing"};
+        /*if (panelService.getTickerList().toArray(new String[panelService.getTickerList().size()]).toString() == null){
+            Ticker_information = panelService.getTickerList().toArray(new String[panelService.getTickerList().size()]);
+        }*/
+
         //各元素初始化
         Ticker = new JComboBox<String>(Ticker_information);
         start_date_label = new JLabel("Start date");
@@ -73,6 +86,8 @@ public class Load_panel_now {
         start_date = new JTextField();
         end_date = new JTextField();
         show_all_details = new JButton("Show all details");
+        risk_free_rate_label = new JLabel("Risk free rate");
+        risk_free_rate = new JTextField();
         return_rate = new JCheckBox("return rate");
         risk = new JCheckBox("risk");
         coefficient = new JCheckBox("coefficient");
@@ -94,15 +109,20 @@ public class Load_panel_now {
         //Button坐标和宽高
         show_all_details.setLocation(100,650);
         show_all_details.setSize(200,100);
+        //Risk free rate坐标和宽高
+        risk_free_rate_label.setLocation(650,50);
+        risk_free_rate_label.setSize(90,50);
+        risk_free_rate.setLocation(750,50);
+        risk_free_rate.setSize(200,100);
         //四个CheckBox坐标和宽高
-        return_rate.setLocation(650,50);
+        /*return_rate.setLocation(650,50);
         return_rate.setSize(200,100);
         risk.setLocation(650,250);
         risk.setSize(200,100);
         coefficient.setLocation(650,450);
         coefficient.setSize(200,100);
         K.setLocation(650,650);
-        K.setSize(200,100);
+        K.setSize(200,100);*/
 
         //Ticker默认选中项目
         Ticker.setSelectedIndex(0);
@@ -113,10 +133,12 @@ public class Load_panel_now {
         panel.add(start_date);
         panel.add(end_date);
         panel.add(show_all_details);
-        panel.add(return_rate);
-        panel.add(risk);
-        panel.add(coefficient);
-        panel.add(K);
+        panel.add(risk_free_rate_label);
+        panel.add(risk_free_rate);
+        //panel.add(return_rate);
+        //panel.add(risk);
+        //panel.add(coefficient);
+        //panel.add(K);
     }
 
 }
