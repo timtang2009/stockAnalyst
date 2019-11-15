@@ -1,16 +1,20 @@
 package com.polyu.finCom.stockAnalyst;
 
+import com.polyu.finCom.Model.StockInfo;
+import com.polyu.finCom.Toaster.PanelService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.lang.annotation.Retention;
 
 public class Test_Menu implements ActionListener {
     private static JFrame jFrame;
 
     //菜单栏
-    private static JMenuBar menuBar;
+    public static JMenuBar menuBar;
 
     //一级菜单
     private JMenu filemenu;
@@ -25,6 +29,27 @@ public class Test_Menu implements ActionListener {
     private JMenuItem Build_PortfolioMenuItem;
     private JMenuItem Recommend_PortfolioMenuItem;
     private JMenuItem Optimize_PortfolioMenuItem;
+
+    //文件Absolute path的String数组
+    private String[] files_absolute_path;
+
+    //Absolute_path的get、set方法
+    public String[] getFiles_absolute_path() {
+        return files_absolute_path;
+    }
+
+    public void setFiles_absolute_path(String[] files_absolute_path) {
+        this.files_absolute_path = files_absolute_path;
+    }
+
+    //Load_panel
+    Load_panel_now load_panel_now = new Load_panel_now();
+
+    //Load_panel2
+    Load_panel_now_2 load_panel_now_2 = new Load_panel_now_2();
+
+    //PanelService
+    PanelService panelService = new PanelService();
 
     public Test_Menu(){
         //创建菜单栏
@@ -64,6 +89,8 @@ public class Test_Menu implements ActionListener {
         Recommend_PortfolioMenuItem.addActionListener(this);
         Optimize_PortfolioMenuItem.addActionListener(this);
 
+
+
     }
 
     public static void main(String[] args) {
@@ -72,6 +99,7 @@ public class Test_Menu implements ActionListener {
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Test_Menu test_menu = new Test_Menu();
+
         jFrame.setJMenuBar(menuBar);
         jFrame.setVisible(true);
     }
@@ -91,15 +119,16 @@ public class Test_Menu implements ActionListener {
         return panel;
     }
 
+    //菜单栏的逻辑判断
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == openMenuItem){
-            jFrame.setContentPane(createTextPanel("Open"));
-            jFrame.revalidate();
+            showFileOpenDialog(jFrame);
 
         }else if (source == loadMenuItem){
-            jFrame.setContentPane(createTextPanel("Load"));
+            jFrame.setContentPane(card());
             jFrame.revalidate();
+
 
         }else if (source == rankMenuItem){
             jFrame.setContentPane(createTextPanel("Rank"));
@@ -116,9 +145,114 @@ public class Test_Menu implements ActionListener {
         }else if (source == Optimize_PortfolioMenuItem){
             jFrame.setContentPane(createTextPanel("Optimize"));
             jFrame.revalidate();
+        }
+    }
 
+    /*
+     *创建一个文件选择器
+     * 放在open菜单中
+     * 功能：导入文件并返回一个String类型数组列明选中文件的absolute path
+     *
+     */
+
+    private void showFileOpenDialog(Component parent){
+        File[] files;
+        String[] files_absolute_path;
+        String[] files_test;
+
+        // 创建一个默认的文件选取器
+        JFileChooser fileChooser = new JFileChooser();
+
+        // 设置默认显示的文件夹为当前文件夹
+        fileChooser.setCurrentDirectory(new File("."));
+
+        // 设置文件选择的模式（文件和文件夹均可选）
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        // 设置是否允许多选
+        fileChooser.setMultiSelectionEnabled(true);
+
+        // 打开文件选择框（线程将被阻塞，知道选择框被关闭）
+        int result = fileChooser.showOpenDialog(parent);
+
+        if (result == JFileChooser.APPROVE_OPTION){
+            // 如果点击了“确定”，则获取选择的文件路径
+            //File file = fileChooser.getSelectedFile();
+
+            // 如果选择多个文件，则通过下面方法获取选择的所有文件
+            files = fileChooser.getSelectedFiles();
+            files_absolute_path = new String[files.length];
+            for (int i = 0; i < files.length; i++) {
+                files_absolute_path[i] = files[i].getAbsolutePath();
+
+            }
+            //保存文件
+            setFiles_absolute_path(files_absolute_path);
+
+            //测试
+            files_test = getFiles_absolute_path();
+            for (int i = 0; i < files.length; i++) {
+
+                System.out.println(files_test[i]);
+            }
+
+            //消息对话框提示保存成功
+            JOptionPane.showMessageDialog(parent,"Files saved successfully","Notification",JOptionPane.INFORMATION_MESSAGE);
+            //第一次需导入文件后再打开load界面
+            //load_panel_now = new Load_panel_now();
         }
 
+    }
+
+    private JComponent card(){
+        //创建卡片布局
+        final CardLayout layout = new CardLayout();
+        final JPanel panel = new JPanel(layout);
+        final JButton button1 = new JButton("跳转");
+        load_panel_now.setTicker(new String[]{"1", "2"});
+        load_panel_now.init();
+        // 根据加入前后决定顺序
+        panel.add("1",load_panel_now.getPanel());
+        panel.add("2",load_panel_now_2.getjPanel());
+
+
+
+        //显示第一个
+        layout.show(panel,"1");
+        /*
+        *当点击show all details按钮
+        * 需要将界面信息全部发到后台进行计算
+        **/
+        load_panel_now.getShow_all_details().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                //跳转下个界面
+                //需要使用Stockinfo进行存取
+                if (source == load_panel_now.getShow_all_details()){
+                    System.out.println("Ticker information: " + load_panel_now.getTicker().getSelectedItem().toString());
+                    System.out.println("Start date: " + load_panel_now.getStart_date().getText());
+                    System.out.println("End date: " + load_panel_now.getEnd_date().getText());
+
+                    //Stockinfo存取
+                    //StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getStart_date().getText(),load_panel_now.getEnd_date().getText(),Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
+                    //load_panel_now_2.setStockInfo(stockInfo);
+                    //load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+                    load_panel_now_2.create_form(2,2,2);
+                    //跳转下一界面
+                    layout.next(panel);
+                }
+            }
+        });
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                if (source == button1){
+                    layout.next(panel);
+                }
+            }
+        });
+        return panel;
     }
 }
 
