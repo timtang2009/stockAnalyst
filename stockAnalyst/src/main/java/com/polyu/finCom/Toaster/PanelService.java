@@ -32,6 +32,7 @@ public class PanelService {
         return map;
     }
 
+    //第二个页面获取ticker info
     public StockInfo getStockInfo(String ticker, String start, String end, Double riskFree) {
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
