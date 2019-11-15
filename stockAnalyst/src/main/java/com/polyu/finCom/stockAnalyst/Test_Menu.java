@@ -221,7 +221,7 @@ public class Test_Menu implements ActionListener {
         if (tickerList != null) {
             load_panel_now.setTicker(tickerList.toArray(new String[tickerList.size()]));
         }
-        load_panel_now.init();
+
         // 根据加入前后决定顺序
         panel.add("1",load_panel_now.getPanel());
         panel.add("2",load_panel_now_2.getjPanel());

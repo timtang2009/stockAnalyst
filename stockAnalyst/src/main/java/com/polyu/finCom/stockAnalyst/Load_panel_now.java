@@ -10,12 +10,17 @@ public class Load_panel_now {
 
         private JPanel panel;
 
-    public void setTicker(String[] ticker_information ) {
+    public String[] getTicker_information() {
+        return Ticker_information;
+    }
 
-        if (ticker_information != null){
-            JComboBox<String> ticker = new JComboBox<String>(ticker_information);
-            Ticker = ticker;
-        }
+    private String[] Ticker_information;
+
+    //Ticker更新数据
+    public void setTicker(String[] ticker_information ) {
+        this.Ticker_information = ticker_information;
+        //修改原数据和使用datamodel
+        Ticker.setModel(new DefaultComboBoxModel<>(this.Ticker_information));
 
     }
 
@@ -87,18 +92,16 @@ public class Load_panel_now {
     }
 
     public Load_panel_now(){
-        //init();
+        init();
     }
 
     public void init(){
         panel = new JPanel(null);
         //Ticker初始元素
-        String[] Ticker_information;
+
         Ticker_information = new String[]{"Nothing"};
         //各元素初始化
-        //Ticker = new JComboBox<String>();
-//        start_date_label = new JLabel("Start date");
-//        end_date_label = new JLabel("End date");
+        Ticker = new JComboBox<String>(Ticker_information);
         show_all_details = new JButton("Show all details");
         risk_free_rate_label = new JLabel("Risk free rate");
         risk_free_rate = new JTextField();
