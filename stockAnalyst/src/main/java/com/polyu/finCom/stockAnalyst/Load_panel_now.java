@@ -1,9 +1,9 @@
 package com.polyu.finCom.stockAnalyst;
 
 import com.polyu.finCom.Toaster.PanelService;
-import org.h2.util.StringUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class Load_panel_now {
@@ -20,10 +20,10 @@ public class Load_panel_now {
     }
 
     private JComboBox<String> Ticker;
-        private JLabel start_date_label;
-        private JLabel end_date_label;
-        private JTextField start_date;
-        private JTextField end_date;
+//        private JLabel start_date_label;
+//        private JLabel end_date_label;
+        private JLabel showDate1;
+        private JLabel showDate2;
         private JButton show_all_details;
         private JLabel risk_free_rate_label;
         private JTextField risk_free_rate;
@@ -44,16 +44,26 @@ public class Load_panel_now {
         return Ticker;
     }
 
-    public JTextField getStart_date() {
-        return start_date;
-    }
-
-    public JTextField getEnd_date() {
-        return end_date;
-    }
-
     public JButton getShow_all_details() {
         return show_all_details;
+    }
+
+    public JLabel getShowDate1() {
+        return showDate1;
+    }
+
+    public Load_panel_now setShowDate1(JLabel showDate1) {
+        this.showDate1 = showDate1;
+        return this;
+    }
+
+    public JLabel getShowDate2() {
+        return showDate2;
+    }
+
+    public Load_panel_now setShowDate2(JLabel showDate2) {
+        this.showDate2 = showDate2;
+        return this;
     }
 
     public JCheckBox getReturn_rate() {
@@ -87,10 +97,8 @@ public class Load_panel_now {
         Ticker_information = new String[]{"Nothing"};
         //各元素初始化
         //Ticker = new JComboBox<String>();
-        start_date_label = new JLabel("Start date");
-        end_date_label = new JLabel("End date");
-        start_date = new JTextField();
-        end_date = new JTextField();
+//        start_date_label = new JLabel("Start date");
+//        end_date_label = new JLabel("End date");
         show_all_details = new JButton("Show all details");
         risk_free_rate_label = new JLabel("Risk free rate");
         risk_free_rate = new JTextField();
@@ -99,19 +107,27 @@ public class Load_panel_now {
         coefficient = new JCheckBox("coefficient");
         K = new JCheckBox("K");
 
+        DateChooser dateChooser1 = DateChooser.getInstance("yyyyMMdd");
+        DateChooser dateChooser2 = DateChooser.getInstance("yyyyMMdd");
+        showDate1 = new JLabel("choose start date");
+        showDate2 = new JLabel("choose end date");
+
+        dateChooser1.register(showDate1);
+        dateChooser2.register(showDate2);
+
         //Ticker 坐标
         Ticker.setLocation(50,50);
         //Ticker 宽高
         Ticker.setSize(200,100);
         //Textfield 坐标和宽高
-        start_date_label.setLocation(50,250);
-        start_date_label.setSize(90,50);
-        end_date_label.setLocation(50,450);
-        end_date_label.setSize(90,50);
-        start_date.setLocation(150,250);
-        start_date.setSize(200,100);
-        end_date.setLocation(150,450);
-        end_date.setSize(200,100);
+//        start_date_label.setLocation(50,250);
+//        start_date_label.setSize(90,50);
+//        end_date_label.setLocation(50,450);
+//        end_date_label.setSize(90,50);
+        showDate1.setLocation(50,250);
+        showDate1.setSize(150,50);
+        showDate2.setLocation(50,450);
+        showDate2.setSize(150,50);
         //Button坐标和宽高
         show_all_details.setLocation(100,650);
         show_all_details.setSize(200,100);
@@ -132,12 +148,11 @@ public class Load_panel_now {
 
         //Ticker默认选中项目
         //Ticker.setSelectedIndex(0);
-
         panel.add(Ticker);
-        panel.add(start_date_label);
-        panel.add(end_date_label);
-        panel.add(start_date);
-        panel.add(end_date);
+//        panel.add(start_date_label);
+//        panel.add(end_date_label);
+        panel.add(showDate1, BorderLayout.NORTH);
+        panel.add(showDate2, BorderLayout.SOUTH);
         panel.add(show_all_details);
         panel.add(risk_free_rate_label);
         panel.add(risk_free_rate);

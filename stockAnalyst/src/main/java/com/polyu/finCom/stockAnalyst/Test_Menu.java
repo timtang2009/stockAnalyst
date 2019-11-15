@@ -226,8 +226,6 @@ public class Test_Menu implements ActionListener {
         panel.add("1",load_panel_now.getPanel());
         panel.add("2",load_panel_now_2.getjPanel());
 
-
-
         //显示第一个
         layout.show(panel,"1");
         /*
@@ -242,18 +240,17 @@ public class Test_Menu implements ActionListener {
                 //需要使用Stockinfo进行存取
                 if (source == load_panel_now.getShow_all_details()){
                     System.out.println("Ticker information: " + load_panel_now.getTicker().getSelectedItem().toString());
-                    System.out.println("Start date: " + load_panel_now.getStart_date().getText());
-                    System.out.println("End date: " + load_panel_now.getEnd_date().getText());
+                    System.out.println("Start date: " + load_panel_now.getShowDate1().getText());
+                    System.out.println("End date: " + load_panel_now.getShowDate2().getText());
 
                     //Stockinfo存取
                     StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),
-                            load_panel_now.getStart_date().getText(),
-                            load_panel_now.getEnd_date().getText(),
+                            load_panel_now.getShowDate1().getText(),
+                            load_panel_now.getShowDate2().getText(),
                             Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
                     if (stockInfo != null) {
                         load_panel_now_2.setStockInfo(stockInfo);
                         load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
-//                        load_panel_now_2.create_form(2, 2, 2);
                     }
                     //跳转下一界面
                     layout.next(panel);
