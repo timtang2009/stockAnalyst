@@ -4,11 +4,24 @@ import com.polyu.finCom.Toaster.PanelService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Load_panel_now {
 
-        private JPanel panel;
+    //判断日期的参数
+    public static final int date_state_passed = 0;
+    public static final int start_date_state_failed = 1;
+    public static final int end_date_state_failed = 2;
+    public static final int both_date_state_failed = 3;
+    public static final int start_bigger_than_end = 4;
+    public static final int unknown_error = 5;
+
+
+    private JPanel panel;
 
     public String[] getTicker_information() {
         return Ticker_information;
@@ -114,6 +127,8 @@ public class Load_panel_now {
         DateChooser dateChooser2 = DateChooser.getInstance("yyyyMMdd");
         showDate1 = new JLabel("choose start date");
         showDate2 = new JLabel("choose end date");
+        showDate1.setToolTipText("Start date");
+        showDate2.setToolTipText("End date");
 
         dateChooser1.register(showDate1);
         dateChooser2.register(showDate2);
@@ -163,6 +178,52 @@ public class Load_panel_now {
         //panel.add(risk);
         //panel.add(coefficient);
         //panel.add(K);
+    }
+
+    // 比较设定开始时间和结束时间是否有超出股票时间期限
+    public int compare_start_end_date(String ticker, String retrived_start_date, String retriced_end_date) throws ParseException {
+        int state;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        Date start_date = simpleDateFormat.parse(GetTicker_StartDate(ticker));
+        Date end_date = simpleDateFormat.parse(GetTicker_EndDate(ticker));
+        Date start_date_retrived = simpleDateFormat.parse(retrived_start_date);
+        Date end_date_retrived = simpleDateFormat.parse(retriced_end_date);
+
+        //日期比较
+        // 1.输入没问题
+        // 2.输入开始日期小于股票开始日期
+        // 3.输入结束日期大于股票结束日期
+        // 4.输入开始日期小于股票开始日期和输入结束日期大于股票结束日期
+        // 5.输入开始日期大于输入结束日期
+        if (start_date_retrived.after(start_date) && end_date_retrived.before(end_date_retrived)){
+            state = date_state_passed;
+        }else if (start_date_retrived.before(start_date) && end_date_retrived.before(end_date)){
+            state = start_date_state_failed;
+        }else if (start_date_retrived.after(start_date) && end_date_retrived.after(end_date)){
+            state = end_date_state_failed;
+        }else if (start_date_retrived.before(start_date) && end_date_retrived.after(end_date)){
+            state = both_date_state_failed;
+        }else if (start_date.after(end_date)){
+            state = start_bigger_than_end;
+        }else {
+            state = unknown_error;
+        }
+
+        return state;
+    }
+
+    public String GetTicker_StartDate(String ticker){
+        Map<String,String> ticker_StartEndDate = panelService.getStartEndDate(ticker);
+        String start_key = "START";
+        String StartDate = ticker_StartEndDate.get(start_key);
+        return StartDate;
+    }
+
+    public String GetTicker_EndDate(String ticker){
+        Map<String,String> ticker_StartEndDate = panelService.getStartEndDate(ticker);
+        String end_key = "END";
+        String EndDate = ticker_StartEndDate.get(end_key);
+        return EndDate;
     }
 
 }

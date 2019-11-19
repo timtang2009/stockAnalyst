@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.ParseException;
 
 public class Test_Menu implements ActionListener {
     private static JFrame jFrame;
@@ -53,6 +54,9 @@ public class Test_Menu implements ActionListener {
 
     //Load_panel2
     Load_panel_now_2 load_panel_now_2 = new Load_panel_now_2();
+
+    //Recommend_panel_1
+    Recommend_panel_1 recommend_panel_1 = new Recommend_panel_1();
 
     //PanelService
     PanelService panelService = new PanelService();
@@ -135,7 +139,7 @@ public class Test_Menu implements ActionListener {
             showFileOpenDialog(jFrame);
 
         }else if (source == loadMenuItem){
-            jFrame.setContentPane(card());
+            jFrame.setContentPane(card(jFrame));
             jFrame.revalidate();
 
 
@@ -144,7 +148,7 @@ public class Test_Menu implements ActionListener {
             jFrame.revalidate();
 
         }else if (source == Build_PortfolioMenuItem){
-            jFrame.setContentPane(createTextPanel("Build"));
+            jFrame.setContentPane(Recommend_card(jFrame));
             jFrame.revalidate();
 
         }else if (source == Recommend_PortfolioMenuItem){
@@ -212,7 +216,7 @@ public class Test_Menu implements ActionListener {
 
     }
 
-    private JComponent card(){
+    private JComponent card(Component parent){
         //创建卡片布局
         final CardLayout layout = new CardLayout();
         final JPanel panel = new JPanel(layout);
@@ -236,6 +240,7 @@ public class Test_Menu implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Object source = e.getSource();
+                int date_state = -1;
                 //跳转下个界面
                 //需要使用Stockinfo进行存取
                 if (source == load_panel_now.getShow_all_details()){
@@ -243,17 +248,42 @@ public class Test_Menu implements ActionListener {
                     System.out.println("Start date: " + load_panel_now.getShowDate1().getText());
                     System.out.println("End date: " + load_panel_now.getShowDate2().getText());
 
-                    //Stockinfo存取
-                    StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),
-                            load_panel_now.getShowDate1().getText(),
-                            load_panel_now.getShowDate2().getText(),
-                            Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
-                    if (stockInfo != null) {
-                        load_panel_now_2.setStockInfo(stockInfo);
-                        load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+                    //日期判断
+                    try {
+                         date_state = load_panel_now.compare_start_end_date(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getShowDate1().getText(),load_panel_now.getShowDate2().getText());
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
                     }
-                    //跳转下一界面
-                    layout.next(panel);
+
+                    // 日期判断正确可跳转下一个界面
+                    if (date_state == Load_panel_now.date_state_passed){
+                        //Stockinfo存取
+                        StockInfo stockInfo = panelService.getStockInfo(load_panel_now.getTicker().getSelectedItem().toString(),
+                                load_panel_now.getShowDate1().getText(),
+                                load_panel_now.getShowDate2().getText(),
+                                Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
+                        if (stockInfo != null) {
+                            load_panel_now_2.setStockInfo(stockInfo);
+                            load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+                        }
+                        //跳转下一界面
+                        layout.next(panel);
+                    }else if (date_state == Load_panel_now.start_date_state_failed){
+                        //消息对话框提示开始日期输错了
+                        JOptionPane.showMessageDialog(parent,"Wrong start date, please type again\n" + load_panel_now.getTicker().getSelectedItem().toString() +"'s start date is "+ load_panel_now.GetTicker_StartDate(load_panel_now.getTicker().getSelectedItem().toString()),"Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }else if (date_state == Load_panel_now.end_date_state_failed){
+                        //消息对话框提示开始日期输错了
+                        JOptionPane.showMessageDialog(parent,"Wrong end date, please type again\n"+ load_panel_now.getTicker().getSelectedItem().toString() +"'s end date is "+ load_panel_now.GetTicker_EndDate(load_panel_now.getTicker().getSelectedItem().toString()),"Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }else if (date_state == Load_panel_now.both_date_state_failed){
+                        //消息对话框提示开始日期输错了
+                        JOptionPane.showMessageDialog(parent,"Wrong start date and end date, please type again\n"+  load_panel_now.getTicker().getSelectedItem().toString() +"'s start date is "+ load_panel_now.GetTicker_StartDate(load_panel_now.getTicker().getSelectedItem().toString())+ "\n" + load_panel_now.getTicker().getSelectedItem().toString() +"'s end date is "+ load_panel_now.GetTicker_EndDate(load_panel_now.getTicker().getSelectedItem().toString()),"Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }else if(date_state == Load_panel_now.start_bigger_than_end){
+                        JOptionPane.showMessageDialog(parent,"Input start date is after the end date","Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }else{
+                        JOptionPane.showMessageDialog(parent,"Program debug happens","Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+
                 }
             }
         });
@@ -266,6 +296,102 @@ public class Test_Menu implements ActionListener {
                 }
             }
         });
+        return panel;
+    }
+
+    private JComponent Recommend_card(Component parent){
+        //创建卡片布局
+        final CardLayout layout = new CardLayout();
+        final JPanel panel = new JPanel(layout);
+
+
+        // 根据加入前后决定顺序
+        panel.add("1",recommend_panel_1.getjPanel());
+        panel.add("2",createTextPanel("Forms here"));
+
+        //显示第一个
+        layout.show(panel,"1");
+
+        java.util.List<String> tickerList = panelService.getTickerList();
+        if (tickerList != null) {
+            recommend_panel_1.setStock_list(tickerList.toArray(new String[tickerList.size()]));
+        }
+        //按Add时会从左边添加选项到右边
+        recommend_panel_1.getAdd().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                if (source == recommend_panel_1.getAdd()){
+                    if (recommend_panel_1.getStock_list().getSelectedIndices().length != 0){
+                        // 获取所有被选中的选项索引
+                        int[] indices = recommend_panel_1.getStock_list().getSelectedIndices();
+                        // 获取选项数据的ListModel
+                        ListModel<String> listModel = recommend_panel_1.getStock_list().getModel();
+                        // 将输出选项存入String数组output_list
+                        String[] output_list = new String[indices.length];
+                        int location = 0;
+                        for (int index:indices) {
+                            output_list[location] = listModel.getElementAt(index);
+                            System.out.println("选中: " + index + "为" + output_list[location] );
+                            location ++;
+                        }
+                        location = 0;
+                        recommend_panel_1.set_Output_Stock_list(output_list);
+                    }else {
+                        JOptionPane.showMessageDialog(parent,"Nothing to add","Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                }
+            }
+        });
+
+        // DELETE功能
+        recommend_panel_1.getDel().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                if (source == recommend_panel_1.getDel()){
+                    if (recommend_panel_1.getOutput_ticker_information() != null){
+                        // 获取所有被选中的选项索引
+                        int[] del_indices = recommend_panel_1.getOutput_stock_list().getSelectedIndices();
+                        // 获取选项数据的ListModel
+                        ListModel<String> listModel = recommend_panel_1.getOutput_stock_list().getModel();
+                        // 将输出选项存入String数组output_list
+                        String[] del_list = new String[del_indices.length];
+                        int del_location = 0;
+                        for (int index:del_indices) {
+                            del_list[del_location] = listModel.getElementAt(index);
+                            System.out.println("删除: " + index + "为" + del_list[del_location] );
+                            del_location ++;
+                        }
+                        del_location = 0;
+                        recommend_panel_1.Remove_Stock_list(del_list);
+                    }else {
+                        JOptionPane.showMessageDialog(parent,"Nothing to delete","Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                }
+            }
+        });
+
+        //Commit功能
+        recommend_panel_1.getCommit().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 获取选项数据的ListModel
+                ListModel<String> listModel = recommend_panel_1.getOutput_stock_list().getModel();
+                // 获取整个输出output list
+                String[] output_list = new String[listModel.getSize()];
+                for (int i = 0; i < listModel.getSize() ; i++) {
+                    output_list[i] = listModel.getElementAt(i);
+                    System.out.println(output_list[i]);
+                }
+                String Risk_Free_Rate = recommend_panel_1.getRFR_text().getText();
+
+                layout.next(panel);
+            }
+        });
+
         return panel;
     }
 }
