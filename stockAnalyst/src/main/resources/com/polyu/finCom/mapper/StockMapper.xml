@@ -39,6 +39,10 @@
         SELECT distinct ticker FROM stock;
     </select>
 
+    <select id="getCloseRecord" resultType="java.lang.Double">
+        SELECT close FROM stock where ticker = #{ticker} and `date` between #{start} and #{end} order by `date` asc;
+    </select>
+
     <select id="getStartEndDate" resultType="java.util.HashMap">
         SELECT min(`date`) as `start`, max(`date`) as `end`  FROM stock where ticker=#{ticker};
     </select>

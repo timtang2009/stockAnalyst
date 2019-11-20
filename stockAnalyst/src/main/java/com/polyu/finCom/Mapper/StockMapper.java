@@ -19,4 +19,6 @@ public interface StockMapper {
     List<String> getTickerList();
 
     Map<String, String> getStartEndDate(String ticker);
+
+    List<Double> getCloseRecord(String ticker, String start, String end);
 }

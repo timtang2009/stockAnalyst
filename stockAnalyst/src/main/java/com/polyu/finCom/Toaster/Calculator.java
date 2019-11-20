@@ -64,27 +64,27 @@ public class Calculator {
     }
 
     //计算协方差
-    public double covariance(double[] v1, double[] v2) {
-        if (v1.length != v2.length)
+    public double covariance(List<Double> v1, List<Double> v2) {
+        if (v1.size() != v2.size())
             throw new IllegalArgumentException(
-                    "Arrays 长度必须相同 : " + v1.length
-                            + ", " + v2.length);
+                    "Arrays 长度必须相同 : " + v1.size()
+                            + ", " + v2.size());
         final double m1 = mean(v1);
         final double m2 = mean(v2);
         double ans = 0.0;
-        for (int i = 0; i < v1.length; i++)
-            ans += (v1[i] - m1) * (v2[i] - m2);
-        return ans / (v1.length - 1);
+        for (int i = 0; i < v1.size(); i++)
+            ans += (v1.get(i) - m1) * (v2.get(i) - m2);
+        return ans / (v1.size() - 1);
     }
 
-    private double mean(double[] v) {
-        return (mass(v) / (double) v.length);
+    private double mean(List<Double> v) {
+        return (mass(v) / (double) v.size());
     }
 
-    private double mass(double[] v) {
+    private double mass(List<Double> v) {
         double somme = 0.0;
-        for (int k = 0; k < v.length; k++) {
-            somme += v[k];
+        for (int k = 0; k < v.size(); k++) {
+            somme += v.get(k);
         }
         return (somme);
     }
