@@ -12,11 +12,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Test_Menu implements ActionListener {
     private static JFrame jFrame;
+
+    public JPanel getWelcome_panel() {
+        return welcome_panel;
+    }
+
+    //欢迎页
+    private static JPanel welcome_panel;
 
     //菜单栏
     public static JMenuBar menuBar;
@@ -49,19 +61,13 @@ public class Test_Menu implements ActionListener {
         this.files_absolute_path = files_absolute_path;
     }
 
-    //Load_panel
-    Load_panel_now load_panel_now = new Load_panel_now();
-
-    //Load_panel2
-    Load_panel_now_2 load_panel_now_2 = new Load_panel_now_2();
-
-    //Recommend_panel_1
-    Recommend_panel_1 recommend_panel_1 = new Recommend_panel_1();
-
     //PanelService
     PanelService panelService = new PanelService();
 
     public Test_Menu(){
+        //欢迎页设立
+        welcome_panel = createTextPanel("Welcome");
+
         //创建菜单栏
         menuBar = new JMenuBar();
 
@@ -114,10 +120,11 @@ public class Test_Menu implements ActionListener {
         sqlSession.close();
 
         jFrame.setJMenuBar(menuBar);
+        jFrame.setContentPane(test_menu.getWelcome_panel());
         jFrame.setVisible(true);
     }
 
-    private static JComponent createTextPanel(String text) {
+    private static JPanel createTextPanel(String text) {
         // 创建面板, 使用一个 1 行 1 列的网格布局（为了让标签的宽高自动撑满面板）
         JPanel panel = new JPanel(new GridLayout(1, 1));
 
@@ -139,25 +146,30 @@ public class Test_Menu implements ActionListener {
             showFileOpenDialog(jFrame);
 
         }else if (source == loadMenuItem){
-            jFrame.setContentPane(card(jFrame));
-            jFrame.revalidate();
+            showSpecifiedPanel(welcome_panel,card(jFrame));
+            //jFrame.setContentPane(card(jFrame));
+            //jFrame.revalidate();
 
 
         }else if (source == rankMenuItem){
-            jFrame.setContentPane(createTextPanel("Rank"));
-            jFrame.revalidate();
+            showSpecifiedPanel(welcome_panel,createTextPanel("Rank"));
+            //jFrame.setContentPane(createTextPanel("Rank"));
+            //jFrame.revalidate();
 
         }else if (source == Build_PortfolioMenuItem){
-            jFrame.setContentPane(Recommend_card(jFrame));
-            jFrame.revalidate();
+            showSpecifiedPanel(welcome_panel,Recommend_card(jFrame));
+            //jFrame.setContentPane(Recommend_card(jFrame));
+            //jFrame.revalidate();
 
         }else if (source == Recommend_PortfolioMenuItem){
-            jFrame.setContentPane(createTextPanel("Recommend"));
-            jFrame.revalidate();
+            showSpecifiedPanel(welcome_panel,createTextPanel("Recommend"));
+            //jFrame.setContentPane(createTextPanel("Recommend"));
+            //jFrame.revalidate();
 
         }else if (source == Optimize_PortfolioMenuItem){
-            jFrame.setContentPane(createTextPanel("Optimize"));
-            jFrame.revalidate();
+            showSpecifiedPanel(welcome_panel,createTextPanel("Optimize"));
+            //jFrame.setContentPane(createTextPanel("Optimize"));
+            //jFrame.revalidate();
         }
     }
 
@@ -216,15 +228,29 @@ public class Test_Menu implements ActionListener {
 
     }
 
-    private JComponent card(Component parent){
+    private JPanel card(Component parent){
+        //Load_panel
+        Load_panel_now load_panel_now = new Load_panel_now();
+
+        //Load_panel2
+        Load_panel_now_2 load_panel_now_2 = new Load_panel_now_2();
+
         //创建卡片布局
         final CardLayout layout = new CardLayout();
         final JPanel panel = new JPanel(layout);
         final JButton button1 = new JButton("跳转");
+
+
+
         java.util.List<String> tickerList = panelService.getTickerList();
         if (tickerList != null) {
             load_panel_now.setTicker(tickerList.toArray(new String[tickerList.size()]));
         }
+
+        //渲染界面
+        load_panel_now.getTicker().setRenderer(new MyComboBoxRenderer("Stock"));
+        load_panel_now.getTicker().setSelectedIndex(-1);
+
 
         // 根据加入前后决定顺序
         panel.add("1",load_panel_now.getPanel());
@@ -287,6 +313,7 @@ public class Test_Menu implements ActionListener {
                 }
             }
         });
+
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -296,18 +323,49 @@ public class Test_Menu implements ActionListener {
                 }
             }
         });
+
+/*下拉列表框选择日期后，
+ * label会提示该股票的开始与结束时间
+ */
+        load_panel_now.getTicker().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+
+                if (e.getStateChange() == ItemEvent.SELECTED){
+
+                    if (load_panel_now.getTicker().getSelectedItem().toString() !=  null){
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+                        DateFormat dateFormat = DateFormat.getDateInstance();
+                        String start_date = load_panel_now.GetTicker_StartDate(load_panel_now.getTicker().getSelectedItem().toString());
+                        String end_date = load_panel_now.GetTicker_EndDate(load_panel_now.getTicker().getSelectedItem().toString());
+                        try {
+                            Date start_date_transformed = simpleDateFormat.parse(start_date);
+                            Date end_date_transformed = simpleDateFormat.parse(end_date);
+                            load_panel_now.getShowDate1().setText("Input start date > " + dateFormat.format(start_date_transformed));
+                            load_panel_now.getShowDate2().setText("Input end date < " + dateFormat.format(end_date_transformed));
+                            load_panel_now.getShowDate1().setToolTipText("Input start date > " + dateFormat.format(start_date_transformed));
+                            load_panel_now.getShowDate2().setToolTipText("Input end date < " + dateFormat.format(end_date_transformed));
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
         return panel;
     }
 
-    private JComponent Recommend_card(Component parent){
+    private JPanel Recommend_card(Component parent){
         //创建卡片布局
         final CardLayout layout = new CardLayout();
         final JPanel panel = new JPanel(layout);
-
+        //Recommend_panel_1
+        Recommend_panel_1 recommend_panel_1 = new Recommend_panel_1();
+        Recommend_panel_2 recommend_panel_2 = new Recommend_panel_2();
 
         // 根据加入前后决定顺序
         panel.add("1",recommend_panel_1.getjPanel());
-        panel.add("2",createTextPanel("Forms here"));
+        panel.add("2",recommend_panel_2.getPanel());
 
         //显示第一个
         layout.show(panel,"1");
@@ -378,21 +436,41 @@ public class Test_Menu implements ActionListener {
         recommend_panel_1.getCommit().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 获取选项数据的ListModel
-                ListModel<String> listModel = recommend_panel_1.getOutput_stock_list().getModel();
-                // 获取整个输出output list
-                String[] output_list = new String[listModel.getSize()];
-                for (int i = 0; i < listModel.getSize() ; i++) {
-                    output_list[i] = listModel.getElementAt(i);
-                    System.out.println(output_list[i]);
-                }
                 String Risk_Free_Rate = recommend_panel_1.getRFR_text().getText();
+                //判断RFR
+                if (recommend_panel_1.isNumber(Risk_Free_Rate)){
+                    Double RFR = Double.parseDouble(Risk_Free_Rate);
+                    if (RFR >= 0 && RFR <= 1){
+                        // 获取选项数据的ListModel
+                        ListModel<String> listModel = recommend_panel_1.getOutput_stock_list().getModel();
+                        // 获取整个输出output list
+                        String[] output_list = new String[listModel.getSize()];
+                        StockInfo[] stockInfos = new StockInfo[listModel.getSize()];
+                        for (int i = 0; i < listModel.getSize() ; i++) {
+                            output_list[i] = listModel.getElementAt(i);
+                            stockInfos[i] = panelService.getStockInfo(output_list[i],recommend_panel_1.GetTicker_StartDate(output_list[i]),recommend_panel_1.GetTicker_EndDate(output_list[i]),RFR);
+                        }
+                        recommend_panel_2.setStockInfos(stockInfos);
+                        layout.next(panel);
+                    }else {
+                        JOptionPane.showMessageDialog(parent,"Risk free rate's range: 0-1","Notification",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(parent,"Risk free rate must be a number","Notification",JOptionPane.INFORMATION_MESSAGE);
+                }
 
-                layout.next(panel);
             }
         });
 
         return panel;
+    }
+
+    // 以WelcomePanel为底，其上覆盖想要展示的panel内容（切换panel）
+    private void showSpecifiedPanel(JPanel welcomePanel, JPanel showPanel){
+        welcomePanel.removeAll();
+        welcomePanel.add(showPanel);
+        welcomePanel.validate();
+        welcomePanel.repaint();
     }
 }
 

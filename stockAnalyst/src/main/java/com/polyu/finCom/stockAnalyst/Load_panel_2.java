@@ -158,7 +158,8 @@ public class Load_panel_2 {
                     k=sb2.indexOf(sb1.toString());
                 }
             }
-            java.util.List list1 = new java.util.ArrayList(rwJComboBox.set);
+            java.util.List list1 = new java
+                    .util.ArrayList(rwJComboBox.set);
             java.util.Collections.sort(list1);
             for (int i=0;i<list1.size();i++)
             {
