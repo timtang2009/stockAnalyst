@@ -1,5 +1,6 @@
 package com.polyu.finCom.stockAnalyst;
 
+import com.polyu.finCom.Toaster.PanelService;
 import com.sun.org.apache.xerces.internal.xs.StringList;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class Recommend_panel_1 {
 
+    PanelService panelService = new PanelService();
 
     //组件
     private JPanel jPanel;
@@ -257,6 +259,34 @@ public class Recommend_panel_1 {
         }
         list_location = 0;
         return list_rebuid;
+    }
+
+    public String GetTicker_StartDate(String ticker){
+        Map<String,String> ticker_StartEndDate = panelService.getStartEndDate(ticker);
+        String start_key = "START";
+        String StartDate = ticker_StartEndDate.get(start_key);
+        return StartDate;
+    }
+
+    public String GetTicker_EndDate(String ticker){
+        Map<String,String> ticker_StartEndDate = panelService.getStartEndDate(ticker);
+        String end_key = "END";
+        String EndDate = ticker_StartEndDate.get(end_key);
+        return EndDate;
+    }
+
+    public boolean isNumber (Object obj) {
+        if (obj instanceof Number) {
+            return true;
+        } else if (obj instanceof String){
+            try{
+                Double.parseDouble((String)obj);
+                return true;
+            }catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
     }
 
 }

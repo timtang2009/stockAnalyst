@@ -111,10 +111,12 @@ public class Load_panel_now {
     public void init(){
         panel = new JPanel(null);
         //Ticker初始元素
+        //渲染界面
+        Ticker = new JComboBox<String>();
+        Ticker.setRenderer(new MyComboBoxRenderer("Stock"));
+        Ticker.setSelectedIndex(-1);
 
-        Ticker_information = new String[]{"Nothing"};
-        //各元素初始化
-        Ticker = new JComboBox<String>(Ticker_information);
+
         show_all_details = new JButton("Show all details");
         risk_free_rate_label = new JLabel("Risk free rate");
         risk_free_rate = new JTextField();
@@ -143,9 +145,9 @@ public class Load_panel_now {
 //        end_date_label.setLocation(50,450);
 //        end_date_label.setSize(90,50);
         showDate1.setLocation(50,250);
-        showDate1.setSize(150,50);
+        showDate1.setSize(180,50);
         showDate2.setLocation(50,450);
-        showDate2.setSize(150,50);
+        showDate2.setSize(180,50);
         //Button坐标和宽高
         show_all_details.setLocation(100,650);
         show_all_details.setSize(200,100);
