@@ -13,6 +13,10 @@
         select * from stock where `date` = #{date};
     </select>
 
+    <select id="getStockByDate" resultType="Stock">
+        select * from stock where `date` = #{date} and ticker=#{ticker};
+    </select>
+
     <update id="createNewTable" parameterType="string">
         CREATE TABLE IF NOT EXISTS ${table} (
                                  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -24,7 +28,7 @@
                                  `low` VARCHAR(50) DEFAULT NULL COMMENT 'low',
                                  `close` VARCHAR(50) DEFAULT NULL COMMENT 'close',
                                  `returnRate` VARCHAR(50) DEFAULT NULL COMMENT '当天收益率',
-                                 `vol` VARCHAR(50) DEFAULT NULL COMMENT 'vol',
+                                 `vol` BIGINT(20) DEFAULT NULL COMMENT 'vol',
                                  PRIMARY KEY (`id`)
         )
     </update>
@@ -47,23 +51,28 @@
         SELECT min(`date`) as `start`, max(`date`) as `end`  FROM stock where ticker=#{ticker};
     </select>
 
-    <!--&lt;!&ndash;查询所有数据&ndash;&gt;-->
-    <!--<select id="findAllUser" resultType="User">-->
-        <!--SELECT * from t_user-->
-    <!--</select>-->
+    <select id="getVolByTicker" resultType="java.lang.Integer">
+        select sum(vol) from stock where `date` between #{start} and #{end} and `ticker`=#{ticker};
+    </select>
 
-    <!--&lt;!&ndash;插入数据&ndash;&gt;-->
-    <!--<insert id="addUser" parameterType="User" keyProperty="id" useGeneratedKeys="true">-->
-        <!--INSERT  INTO  t_user(username,password) values(#{username},#{password})-->
-    <!--</insert>-->
+    <select id="getFullVol" resultType="java.lang.Integer">
+        select sum(vol) from stock where `date` between #{start} and #{end};
+    </select>
 
-    <!--&lt;!&ndash;删除数据&ndash;&gt;-->
-    <!--<delete id="deleteUserById" parameterType="int">-->
-        <!--DELETE  from t_user WHERE  id= #{id}-->
-    <!--</delete>-->
+    <select id="getDailyVol" resultType="java.lang.Integer">
+        select sum(vol) from stock where `date`=#{date};
+    </select>
 
-    <!--<update id="updateUser" parameterType="User" useGeneratedKeys="true" keyProperty="id" >-->
-        <!--UPDATE t_user SET username=#{username},password=#{password}-->
-        <!--WHERE id=#{id}-->
-    <!--</update>-->
+    <select id="getReturnRatesByTickers" resultType="java.lang.Double">
+        select returnRate from stock where ticker = #{ticker} and `date` between #{start} and #{end};
+    </select>
+
+    <select id="getTickerInRange" resultType="java.lang.String">
+        select distinct ticker from stock where `date` between #{start} and #{end};
+    </select>
+
+    <select id="getDatesByRange" resultType="java.lang.String">
+        select distinct `date` from stock where `date` between #{start} and #{end};
+    </select>
+
 </mapper>

@@ -21,4 +21,18 @@ public interface StockMapper {
     Map<String, String> getStartEndDate(String ticker);
 
     List<Double> getCloseRecord(String ticker, String start, String end);
+
+    Integer getVolByTicker(@Param("start") String start, @Param("end") String end, @Param("ticker") String ticker);
+
+    Integer getFullVol(@Param("start") String start, @Param("end") String end);
+
+    Integer getDailyVol(@Param("date")String date);
+
+    Stock getStockByDate(@Param("date") String date, @Param("ticker") String ticker);
+
+    List<String> getTickerInRange(@Param("start") String start, @Param("end") String end);
+
+    List<String> getDatesByRange(@Param("start") String start, @Param("end") String end);
+
+    List<Double> getReturnRatesByTickers(@Param("start") String start, @Param("end") String end);
 }

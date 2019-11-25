@@ -11,7 +11,7 @@ public class Stock {
     private String low;
     private String close;
     private String returnRate;
-    private String vol;
+    private Integer vol;
 
     public Integer getId() {
         return id;
@@ -94,11 +94,11 @@ public class Stock {
         return this;
     }
 
-    public String getVol() {
+    public Integer getVol() {
         return vol;
     }
 
-    public Stock setVol(String vol) {
+    public Stock setVol(Integer vol) {
         this.vol = vol;
         return this;
     }

@@ -106,14 +106,135 @@ PanelService {
         return returnRate;
     }
 
+    //calculate the daily return rate market portfolio
+    public double getMReturnRate(String date) {
+        SqlSession sqlSession = getSession();
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        Integer dailyVol = mapper.getDailyVol(date);
+        List<Stock> stocks = mapper.findStockByDate(date);
+        double dailyRate = 0;
+        if (stocks != null && stocks.size() > 0) {
+            for (Stock stock : stocks) {
+                dailyRate += Double.valueOf(stock.getReturnRate()) * stock.getVol() / dailyVol;
+            }
+        }
+        sqlSession.close();
+        return dailyRate;
+    }
+
+    //calculate the risk of market portfolio
+    public double getMarketRisk(String start, String end) {
+        SqlSession sqlSession = getSession();
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        List<String> dates = mapper.getDatesByRange(start, end);
+        List<Double> returnRates = new ArrayList<>();
+        for (String date : dates) {
+            double dailyRate = 0;
+            List<Stock> stocks = mapper.findStockByDate(date);
+            Integer dailyVol = mapper.getDailyVol(date);
+            if (stocks != null && stocks.size() > 0) {
+                for (Stock stock : stocks) {
+                    dailyRate += Double.valueOf(stock.getReturnRate()) * stock.getVol() / dailyVol;
+                }
+            }
+            returnRates.add(dailyRate);
+        }
+        sqlSession.close();
+        return calculator.getVariance(returnRates,null);
+    }
+
+    //calculate the beta of each stock
+    public double getStockBeta(String ticker, String start, String end) {
+        SqlSession sqlSession = getSession();
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        List<String> dates = mapper.getDatesByRange(start, end);
+        List<Double> stockData = new ArrayList<>();
+        List<Double> marketData = new ArrayList<>();
+        for (int i = 0; i < dates.size(); i++) {
+            Stock stock = mapper.getStockByDate(dates.get(i), ticker);
+            stockData.add(Double.valueOf(stock.getReturnRate()));
+            marketData.add(this.getMReturnRate(dates.get(i)));
+        }
+        sqlSession.close();
+        return calculator.covariance(stockData, marketData) / this.getMarketRisk(start, end);
+    }
+
+    public List<StockInfo> getMatrix(List<StockInfo> condition) {
+        SqlSession sqlSession = getSession();
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        List<List<Double>> retData = new ArrayList<>();
+        List<String> dates = mapper.getDatesByRange(condition.get(0).getStartDate(), condition.get(0).getEndDate());
+        List<Double> eFactor = new ArrayList<>();
+        for (StockInfo stockInfo : condition) {
+            if (stockInfo.getRiskFree() == null) {
+                List<Double> stockRates = mapper.getReturnRatesByTickers(stockInfo.getStartDate(), stockInfo.getEndDate());
+                retData.add(stockRates);
+            } else {
+                List<Double> riskFreeRates = new ArrayList<>();
+                for (int i = 0; i < dates.size(); i++)
+                    riskFreeRates.add(stockInfo.getRiskFree());
+                retData.add(riskFreeRates);
+            }
+            eFactor.add(stockInfo.getReturnRate() - stockInfo.getRiskFree());
+        }
+        double[][] covRates = new double[condition.size()][condition.size()];
+        if (retData.size() > 0) {
+            for (int i = 0; i < condition.size(); i++) {
+                for (int j = 0; j < condition.size(); j++) {
+                    covRates[i][j] = calculator.covariance(retData.get(i), retData.get(j));
+                }
+            }
+        }
+        double[][] retCov = calculator.getReverseMatrix(covRates, condition.size());
+        List<StockInfo> reCondition = new ArrayList<>();
+        List<Double> weights = new ArrayList<>();
+        double sum = 0;
+        for (int i = 0; i < condition.size(); i++) {
+            double slot = 0;
+            for (int j = 0; j < condition.size(); j++) {
+                slot += retCov[i][j] * eFactor.get(i);
+            }
+            weights.add(slot);
+            sum += slot;
+        }
+        for (int i = 0; i < condition.size(); i++) {
+            condition.get(i).setWeight(weights.get(i) / sum);
+        }
+        sqlSession.close();
+        return condition;
+    }
+
+    //calculate the alpha of each stock
+    public double getStockAlpha(String ticker, String start, String end, Double riskFree) {
+        return (1 - this.getStockBeta(ticker, start, end)) * riskFree;
+    }
+
     //获取股票组合收益
     public List<StockInfo> getBatchInterest(List<StockInfo> condition) {
-        return null;
+        List<StockInfo> result = new ArrayList<>();
+        double resurnRate = 0, alpha = 0, beta = 0;
+        for (StockInfo stockInfo : condition) {
+            StockInfo info = getStockInfo(stockInfo.getTicker(), stockInfo.getStartDate(), stockInfo.getEndDate(), stockInfo.getRiskFree());
+            info.setBeta(this.getStockBeta(stockInfo.getTicker(), stockInfo.getStartDate(), stockInfo.getEndDate()));
+            info.setAlpha((1 - info.getBeta()) * stockInfo.getRiskFree());
+            info.setWeight(stockInfo.getWeight());
+            result.add(info);
+            resurnRate += info.getWeight() * info.getReturnRate();
+            alpha += info.getWeight() * info.getAlpha();
+            beta += info.getWeight() * info.getBeta();
+        }
+        StockInfo overall = new StockInfo();
+        overall.setBeta(beta)
+                .setAlpha(alpha)
+                .setReturnRate(resurnRate)
+                .setTicker("Portfolio");
+        result.add(overall);
+        return result;
     }
 
     //获取投资优化收益
     public List<StockInfo> getOptimization(List<StockInfo> condition) {
-        return null;
+        return this.getBatchInterest(this.getMatrix(condition));
     }
 
     private SqlSession getSession() {

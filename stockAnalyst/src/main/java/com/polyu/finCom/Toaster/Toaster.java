@@ -45,7 +45,7 @@ public class Toaster {
                             .setHigh(datas[4])
                             .setLow(datas[5])
                             .setClose(datas[6])
-                            .setVol(datas[7]);
+                            .setVol(Integer.valueOf(datas[7]));
                     if (close != 0.0) {
                         stock.setReturnRate(String.valueOf(calculator.getInterest(Double.valueOf(datas[6]), close)));
                     }

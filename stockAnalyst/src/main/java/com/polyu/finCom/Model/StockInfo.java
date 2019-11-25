@@ -15,6 +15,8 @@ public class StockInfo {
     private Double risk;
     //β
     private Double beta;
+    //α
+    private Double alpha;
     //sharp ratio
     private Double sharpRatio;
     //
@@ -35,6 +37,15 @@ public class StockInfo {
 
     public StockInfo setWeight(Double weight) {
         this.weight = weight;
+        return this;
+    }
+
+    public Double getAlpha() {
+        return alpha;
+    }
+
+    public StockInfo setAlpha(Double alpha) {
+        this.alpha = alpha;
         return this;
     }
 
