@@ -27,7 +27,7 @@
                                  `high` VARCHAR(20) DEFAULT NULL COMMENT 'high',
                                  `low` VARCHAR(50) DEFAULT NULL COMMENT 'low',
                                  `close` VARCHAR(50) DEFAULT NULL COMMENT 'close',
-                                 `returnRate` VARCHAR(50) DEFAULT NULL COMMENT '当天收益率',
+                                 `returnRate` VARCHAR(50) DEFAULT '0' COMMENT '当天收益率',
                                  `vol` BIGINT(20) DEFAULT NULL COMMENT 'vol',
                                  PRIMARY KEY (`id`)
         )

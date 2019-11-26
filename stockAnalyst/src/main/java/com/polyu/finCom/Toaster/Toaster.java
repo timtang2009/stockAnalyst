@@ -48,6 +48,8 @@ public class Toaster {
                             .setVol(Integer.valueOf(datas[7]));
                     if (close != 0.0) {
                         stock.setReturnRate(String.valueOf(calculator.getInterest(Double.valueOf(datas[6]), close)));
+                    } else {
+                        stock.setReturnRate("0");
                     }
                     mapper.insert(stock);
                     close = Double.valueOf(datas[6]);

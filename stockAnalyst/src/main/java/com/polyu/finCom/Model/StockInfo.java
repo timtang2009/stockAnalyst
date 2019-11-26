@@ -1,5 +1,7 @@
 package com.polyu.finCom.Model;
 
+import java.text.DecimalFormat;
+
 public class StockInfo {
     //股票代码
     private String ticker;
@@ -41,7 +43,8 @@ public class StockInfo {
     }
 
     public Double getAlpha() {
-        return alpha;
+        DecimalFormat df = new DecimalFormat(".####");
+        return Double.valueOf(df.format(alpha));
     }
 
     public StockInfo setAlpha(Double alpha) {
@@ -77,7 +80,8 @@ public class StockInfo {
     }
 
     public Double getRisk() {
-        return risk;
+        DecimalFormat df = new DecimalFormat(".####");
+        return Double.valueOf(df.format(risk));
     }
 
     public StockInfo setRisk(Double risk) {
@@ -86,7 +90,8 @@ public class StockInfo {
     }
 
     public Double getBeta() {
-        return beta;
+        DecimalFormat df = new DecimalFormat(".####");
+        return Double.valueOf(df.format(beta));
     }
 
     public StockInfo setBeta(Double beta) {
@@ -95,7 +100,8 @@ public class StockInfo {
     }
 
     public Double getSharpRatio() {
-        return sharpRatio;
+        DecimalFormat df = new DecimalFormat(".####");
+        return Double.valueOf(df.format(sharpRatio));
     }
 
     public StockInfo setSharpRatio(Double sharpRatio) {
@@ -104,7 +110,8 @@ public class StockInfo {
     }
 
     public Double getRiskFree() {
-        return riskFree;
+        DecimalFormat df = new DecimalFormat(".####");
+        return Double.valueOf(df.format(riskFree));
     }
 
     public StockInfo setRiskFree(Double riskFree) {
