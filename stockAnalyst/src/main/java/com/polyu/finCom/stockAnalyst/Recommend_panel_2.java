@@ -1,6 +1,7 @@
 package com.polyu.finCom.stockAnalyst;
 
 import com.polyu.finCom.Model.StockInfo;
+import com.polyu.finCom.Toaster.PanelService;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -20,6 +21,7 @@ public class Recommend_panel_2 {
     private JTable table;
     private TableModel tableModel;
     private JScrollPane scrollPane;
+    PanelService panelService = new PanelService();
 
     public void setStockInfos(StockInfo[] stockInfos) {
         this.stockInfos = stockInfos;
@@ -29,7 +31,7 @@ public class Recommend_panel_2 {
             init_set_value(stockInfos[row],row);
         }
         //Risk Free Offset
-        tableModel.setValueAt("Rfoffset",stockInfos.length,0);
+        tableModel.setValueAt("Risk Free Rate",stockInfos.length,0);
         tableModel.setValueAt("",stockInfos.length,1);
         tableModel.setValueAt(0.35,stockInfos.length,4);
         tableModel.setValueAt(0,stockInfos.length,5);
@@ -112,15 +114,16 @@ public class Recommend_panel_2 {
                 //     TableModelEvent.UPDATE   现有数据的更改
                 //     TableModelEvent.DELETE   有行或列被移除
                 int type = e.getType();
-
+                System.out.println("总共行数： " + tableModel.getRowCount());
                 // 针对 现有数据的更改 更新其他单元格数据
                 //当weight等于1时才进行输出
                 //其他时候不作任何输出
                 if (type == TableModelEvent.UPDATE) {
                     double weight_sum = 0;
                     // 只处理weight这一列
+                    // 最后一行是总数
                     if (column == 1){
-                        for (int row = 0; row < tableModel.getRowCount(); row++){
+                        for (int row = 0; row < tableModel.getRowCount()-1; row++){
                             Object value = tableModel.getValueAt(row,column);
                             if (isNumber(value) && value != null){
                                 Double weight = Double.parseDouble(String.valueOf(value));
@@ -185,13 +188,14 @@ public class Recommend_panel_2 {
 
     private void init_set_value(StockInfo stockInfo,int rowIndex){
         //设置一行的数据，weight都设为0，weight都需要手动修改
+        // Stock的Beta修改
         tableModel.setValueAt(stockInfo.getTicker(),rowIndex,0);
         tableModel.setValueAt(0,rowIndex,1);
         tableModel.setValueAt(stockInfo.getStartDate(),rowIndex,2);
         tableModel.setValueAt(stockInfo.getEndDate(),rowIndex,3);
         tableModel.setValueAt(stockInfo.getReturnRate(),rowIndex,4);
         tableModel.setValueAt(stockInfo.getRisk(),rowIndex,5);
-        tableModel.setValueAt(stockInfo.getBeta(),rowIndex,6);
+        tableModel.setValueAt(panelService.getStockBeta(stockInfo.getTicker(),stockInfo.getStartDate(),stockInfo.getEndDate()),rowIndex,6);
     }
 
 }
