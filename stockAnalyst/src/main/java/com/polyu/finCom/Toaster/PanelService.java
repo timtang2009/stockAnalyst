@@ -239,7 +239,7 @@ PanelService {
         StockInfo overall = new StockInfo();
         overall.setBeta(beta)
                 .setAlpha(alpha)
-                .setRisk(this.getMarketRisk(condition.get(0).getStartDate(), condition.get(0).getEndDate()))
+                .setRisk(Math.sqrt(this.getMarketRisk(condition.get(0).getStartDate(), condition.get(0).getEndDate())))
                 .setReturnRate(resurnRate)
                 .setTicker("Portfolio");
         result.add(overall);
