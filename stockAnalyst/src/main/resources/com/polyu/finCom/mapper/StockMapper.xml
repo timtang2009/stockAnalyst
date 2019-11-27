@@ -33,6 +33,15 @@
         )
     </update>
 
+    <update id="createMarketTable" parameterType="string">
+        CREATE TABLE IF NOT EXISTS ${table} (
+                                                `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                                `date` VARCHAR(50) NOT NULL COMMENT 'date',
+                                                `returnRate` VARCHAR(50) DEFAULT '0' COMMENT '当天收益率',
+                                                PRIMARY KEY (`id`)
+        )
+    </update>
+
     <insert id="insert">
         INSERT INTO stock(`ticker`,`date`,`time`,`open`,`high`, `returnRate`,`low`,`close`,`vol`)
         VALUES

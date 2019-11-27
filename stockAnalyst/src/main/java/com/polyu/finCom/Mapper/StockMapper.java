@@ -14,6 +14,7 @@ public interface StockMapper {
 
     void createNewTable(@Param("table") String table);
 
+
     void insert(Stock stock);
 
     List<String> getTickerList();

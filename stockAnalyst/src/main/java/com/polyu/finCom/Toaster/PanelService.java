@@ -6,6 +6,7 @@ import com.polyu.finCom.Model.StockInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,6 +146,7 @@ PanelService {
 
     //calculate the beta of each stock
     public double getStockBeta(String ticker, String start, String end) {
+        System.out.println("------" + LocalTime.now());
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         List<String> dates = mapper.getDatesByRange(start, end);
@@ -152,11 +154,13 @@ PanelService {
         List<Double> marketData = new ArrayList<>();
         for (int i = 0; i < dates.size(); i++) {
             Stock stock = mapper.getStockByDate(dates.get(i), ticker);
-            stockData.add(Double.valueOf(stock.getReturnRate()));
-            marketData.add(this.getMReturnRate(dates.get(i)));
+            if (stock != null) {
+                stockData.add(Double.valueOf(stock.getReturnRate()));
+                marketData.add(this.getMReturnRate(dates.get(i)));
+            }
         }
-        System.out.println("++++1");
         sqlSession.close();
+        System.out.println("-------" + LocalTime.now());
         return calculator.covariance(stockData, marketData) / this.getMarketRisk(start, end);
     }
 
@@ -235,6 +239,7 @@ PanelService {
         StockInfo overall = new StockInfo();
         overall.setBeta(beta)
                 .setAlpha(alpha)
+                .setRisk(this.getMarketRisk(condition.get(0).getStartDate(), condition.get(0).getEndDate()))
                 .setReturnRate(resurnRate)
                 .setTicker("Portfolio");
         result.add(overall);
