@@ -111,16 +111,9 @@ PanelService {
     public double getMReturnRate(String date) {
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
-        Integer dailyVol = mapper.getDailyVol(date);
-        List<Stock> stocks = mapper.findStockByDate(date);
-        double dailyRate = 0;
-        if (stocks != null && stocks.size() > 0) {
-            for (Stock stock : stocks) {
-                dailyRate += Double.valueOf(stock.getReturnRate()) * stock.getVol() / dailyVol;
-            }
-        }
+        String dailyReturn = mapper.getMarketDailyReturn(date);
         sqlSession.close();
-        return dailyRate;
+        return dailyReturn == null ? null : Double.valueOf(dailyReturn);
     }
 
     //calculate the risk of market portfolio
@@ -130,15 +123,7 @@ PanelService {
         List<String> dates = mapper.getDatesByRange(start, end);
         List<Double> returnRates = new ArrayList<>();
         for (String date : dates) {
-            double dailyRate = 0;
-            List<Stock> stocks = mapper.findStockByDate(date);
-            Integer dailyVol = mapper.getDailyVol(date);
-            if (stocks != null && stocks.size() > 0) {
-                for (Stock stock : stocks) {
-                    dailyRate += Double.valueOf(stock.getReturnRate()) * stock.getVol() / dailyVol;
-                }
-            }
-            returnRates.add(dailyRate);
+            returnRates.add(this.getMReturnRate(date));
         }
         sqlSession.close();
         return calculator.getVariance(returnRates,null);

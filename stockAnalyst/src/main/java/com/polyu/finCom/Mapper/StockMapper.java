@@ -14,8 +14,13 @@ public interface StockMapper {
 
     void createNewTable(@Param("table") String table);
 
+    void createMarketTable(@Param("table") String market);
 
     void insert(Stock stock);
+
+    String getMarketDailyReturn(String date);
+
+    void insertMarket(Map<String, String> map);
 
     List<String> getTickerList();
 

@@ -11,6 +11,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Toaster {
 
@@ -61,6 +64,28 @@ public class Toaster {
             logger.error("fail to read File from {}", path, e);
         }
         return null;
+    }
+
+    public void setMarketReturn() {
+        SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        List<String> ttlDates = mapper.getDatesByRange("19000101", "20210101");
+        for (int i = 0; i < ttlDates.size(); i++) {
+            Map<String, String> marketDaily = new HashMap<>();
+            marketDaily.put("date", ttlDates.get(i));
+            Integer dailyVol = mapper.getDailyVol(ttlDates.get(i));
+            List<Stock> stocks = mapper.findStockByDate(ttlDates.get(i));
+            double dailyRate = 0;
+            if (stocks != null && stocks.size() > 0) {
+                for (Stock stock : stocks) {
+                    dailyRate += Double.valueOf(stock.getReturnRate()) * stock.getVol() / dailyVol;
+                }
+            }
+            marketDaily.put("returnRate", String.valueOf(dailyRate));
+            mapper.insertMarket(marketDaily);
+        }
+        sqlSession.close();
     }
 
 //    public static void main(String[] args) throws Exception {

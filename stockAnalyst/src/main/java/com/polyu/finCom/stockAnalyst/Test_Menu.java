@@ -119,6 +119,7 @@ public class Test_Menu implements ActionListener {
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         mapper.createNewTable("stock");
+        mapper.createMarketTable("market");
         sqlSession.close();
 
         jFrame.setJMenuBar(menuBar);
@@ -221,6 +222,14 @@ public class Test_Menu implements ActionListener {
                 toaster.readFile(files_test[i]);
                 System.out.println(files_test[i]);
             }
+
+            Thread thread=new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    toaster.setMarketReturn();
+                }
+            });
+            thread.start();
 
             //消息对话框提示保存成功
             JOptionPane.showMessageDialog(parent,"Files saved successfully","Notification",JOptionPane.INFORMATION_MESSAGE);

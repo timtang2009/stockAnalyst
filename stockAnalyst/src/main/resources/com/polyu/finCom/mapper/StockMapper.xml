@@ -48,8 +48,18 @@
         (#{ticker},#{date},#{time},#{open},#{high},#{returnRate},#{low},#{close},#{vol});
     </insert>
 
+    <insert id="insertMarket">
+        INSERT INTO market(`date`, `returnRate`)
+        VALUES
+        (#{date},#{returnRate});
+    </insert>
+
     <select id="getTickerList" resultType="java.lang.String">
         SELECT distinct ticker FROM stock;
+    </select>
+
+    <select id="getMarketDailyReturn" resultType="java.lang.String">
+        SELECT returnRate FROM market where `date`=#{date};
     </select>
 
     <select id="getCloseRecord" resultType="java.lang.Double">

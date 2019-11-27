@@ -197,7 +197,7 @@ public class Load_panel_now {
         // 3.输入结束日期大于股票结束日期
         // 4.输入开始日期小于股票开始日期和输入结束日期大于股票结束日期
         // 5.输入开始日期大于输入结束日期
-        if (start_date_retrived.after(start_date) && end_date_retrived.before(end_date)){
+        if (!start_date_retrived.before(start_date) && !end_date_retrived.after(end_date)){
             state = date_state_passed;
         }else if (start_date_retrived.before(start_date) && end_date_retrived.before(end_date)){
             state = start_date_state_failed;

@@ -71,7 +71,8 @@ public class StockInfo {
     }
 
     public Double getReturnRate() {
-        return returnRate;
+        DecimalFormat df = new DecimalFormat(".####");
+        return Double.valueOf(df.format(returnRate));
     }
 
     public StockInfo setReturnRate(Double returnRate) {
