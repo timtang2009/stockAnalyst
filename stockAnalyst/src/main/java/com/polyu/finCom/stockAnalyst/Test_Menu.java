@@ -18,7 +18,9 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Test_Menu implements ActionListener {
     private static JFrame jFrame;
@@ -446,11 +448,16 @@ public class Test_Menu implements ActionListener {
                         // 获取整个输出output list
                         String[] output_list = new String[listModel.getSize()];
                         StockInfo[] stockInfos = new StockInfo[listModel.getSize()];
-                        for (int i = 0; i < listModel.getSize() ; i++) {
+
+                        // 初始化的weight为0
+                        for (int i = 0; i < listModel.getSize(); i++) {
                             output_list[i] = listModel.getElementAt(i);
                             stockInfos[i] = panelService.getStockInfo(output_list[i],recommend_panel_1.GetTicker_StartDate(output_list[i]),recommend_panel_1.GetTicker_EndDate(output_list[i]),RFR);
+                            stockInfos[i].setWeight(0.0);
+                            stockInfos[i].setRiskFree(RFR);
                         }
-                        recommend_panel_2.setStockInfos(stockInfos);
+                        recommend_panel_2.setStockInfos(stockInfos,RFR);
+                        recommend_panel_2.init2();
                         layout.next(panel);
                     }else {
                         JOptionPane.showMessageDialog(parent,"Risk free rate's range: 0-1","Notification",JOptionPane.INFORMATION_MESSAGE);
