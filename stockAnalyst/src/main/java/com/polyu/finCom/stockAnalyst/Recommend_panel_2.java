@@ -48,7 +48,7 @@ public class Recommend_panel_2{
         rowData[stockInfos.length][0] = "Risk Free Rate";
         rowData[stockInfos.length][1] = 0.0;
         rowData[stockInfos.length][4] = RFR;
-        rowData[stockInfos.length][5] = 0;
+        rowData[stockInfos.length][5] = 0.0;
         this.stockInfos.add(risk_free_rate);
         //tableModel.insertRow(stockInfos.length,rowData[stockInfos.length]);
 
@@ -179,6 +179,10 @@ public class Recommend_panel_2{
                                 System.out.println(i + " 行：" + stockInfos.get(i).getWeight());
                             }
                             calculated_stockInfos = panelService.getBatchInterest(stockInfos);
+                            StockInfo portfolio = calculated_stockInfos.get(calculated_stockInfos.size()-1);
+                            tableModel.setValueAt(portfolio.getReturnRate(),tableModel.getRowCount()-1,4);
+                            tableModel.setValueAt(portfolio.getRisk(),tableModel.getRowCount()-1,5);
+                            tableModel.setValueAt(portfolio.getBeta(),tableModel.getRowCount()-1,6);
                             System.out.println("通过");
                         }
                     }
