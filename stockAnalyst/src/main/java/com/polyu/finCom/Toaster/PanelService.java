@@ -155,6 +155,7 @@ PanelService {
             stockData.add(Double.valueOf(stock.getReturnRate()));
             marketData.add(this.getMReturnRate(dates.get(i)));
         }
+        System.out.println("++++1");
         sqlSession.close();
         return calculator.covariance(stockData, marketData) / this.getMarketRisk(start, end);
     }
@@ -214,10 +215,18 @@ PanelService {
         List<StockInfo> result = new ArrayList<>();
         double resurnRate = 0, alpha = 0, beta = 0;
         for (StockInfo stockInfo : condition) {
-            StockInfo info = getStockInfo(stockInfo.getTicker(), stockInfo.getStartDate(), stockInfo.getEndDate(), stockInfo.getRiskFree());
-            info.setBeta(this.getStockBeta(stockInfo.getTicker(), stockInfo.getStartDate(), stockInfo.getEndDate()));
-            info.setAlpha((1 - info.getBeta()) * stockInfo.getRiskFree());
-            info.setWeight(stockInfo.getWeight());
+            StockInfo info = new StockInfo();
+            if (!"riskFree".equals(stockInfo.getTicker())) {
+                info = getStockInfo(stockInfo.getTicker(), stockInfo.getStartDate(), stockInfo.getEndDate(), stockInfo.getRiskFree());
+                info.setBeta(this.getStockBeta(stockInfo.getTicker(), stockInfo.getStartDate(), stockInfo.getEndDate()));
+                info.setAlpha((1 - info.getBeta()) * stockInfo.getRiskFree());
+                info.setWeight(stockInfo.getWeight());
+            } else {
+                info = stockInfo;
+                info.setReturnRate(info.getRiskFree());
+                info.setAlpha(0.0)
+                        .setBeta(0.0);
+            }
             result.add(info);
             resurnRate += info.getWeight() * info.getReturnRate();
             alpha += info.getWeight() * info.getAlpha();
