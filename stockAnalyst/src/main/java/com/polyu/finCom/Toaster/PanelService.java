@@ -131,22 +131,33 @@ PanelService {
 
     //calculate the beta of each stock
     public double getStockBeta(String ticker, String start, String end) {
-        System.out.println("------" + LocalTime.now());
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
-        List<String> dates = mapper.getDatesByRange(start, end);
-        List<Double> stockData = new ArrayList<>();
-        List<Double> marketData = new ArrayList<>();
-        for (int i = 0; i < dates.size(); i++) {
-            Stock stock = mapper.getStockByDate(dates.get(i), ticker);
-            if (stock != null) {
-                stockData.add(Double.valueOf(stock.getReturnRate()));
-                marketData.add(this.getMReturnRate(dates.get(i)));
+        String beta = mapper.getBetaByDate(ticker, start, end);
+        if (beta != null && beta.length() > 0) {
+            sqlSession.close();
+            return Double.valueOf(beta);
+        } else {
+            List<String> dates = mapper.getDatesByRange(start, end);
+            List<Double> stockData = new ArrayList<>();
+            List<Double> marketData = new ArrayList<>();
+            for (int i = 0; i < dates.size(); i++) {
+                Stock stock = mapper.getStockByDate(dates.get(i), ticker);
+                if (stock != null) {
+                    stockData.add(Double.valueOf(stock.getReturnRate()));
+                    marketData.add(this.getMReturnRate(dates.get(i)));
+                }
             }
+            StockInfo stockInfo = new StockInfo();
+            double stockBeta = calculator.covariance(stockData, marketData) / this.getMarketRisk(start, end);
+            stockInfo.setTicker(ticker)
+                    .setStartDate(start)
+                    .setEndDate(end)
+                    .setBeta(stockBeta);
+            mapper.insertBeta(stockInfo);
+            sqlSession.close();
+            return stockBeta;
         }
-        sqlSession.close();
-        System.out.println("-------" + LocalTime.now());
-        return calculator.covariance(stockData, marketData) / this.getMarketRisk(start, end);
     }
 
     public List<StockInfo> getMatrix(List<StockInfo> condition) {

@@ -1,6 +1,7 @@
 package com.polyu.finCom.Mapper;
 
 import com.polyu.finCom.Model.Stock;
+import com.polyu.finCom.Model.StockInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,7 +17,13 @@ public interface StockMapper {
 
     void createMarketTable(@Param("table") String market);
 
+    void createBetaTable(@Param("table") String table);
+
     void insert(Stock stock);
+
+    void insertBeta(StockInfo stock);
+
+    String getBetaByDate(@Param("ticker") String ticker, @Param("start") String start, @Param("end") String end);
 
     String getMarketDailyReturn(String date);
 

@@ -42,6 +42,23 @@
         )
     </update>
 
+    <update id="createBetaTable" parameterType="string">
+        CREATE TABLE IF NOT EXISTS ${table} (
+                                                `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                                `ticker` varchar(50) NOT NULL COMMENT 'ticker',
+                                                `startDate` VARCHAR(50) NOT NULL COMMENT 'start_date',
+                                                `endDate` VARCHAR(50) NOT NULL COMMENT 'end_date',
+                                                `beta` VARCHAR(50) DEFAULT '0' COMMENT 'beta值',
+                                                PRIMARY KEY (`id`)
+        )
+    </update>
+
+    <insert id="insertBeta">
+        INSERT INTO stockBeta(`ticker`,`startDate`,`endDate`,`beta`)
+        VALUES
+        (#{ticker},#{startDate},#{endDate},#{beta});
+    </insert>
+
     <insert id="insert">
         INSERT INTO stock(`ticker`,`date`,`time`,`open`,`high`, `returnRate`,`low`,`close`,`vol`)
         VALUES
@@ -56,6 +73,10 @@
 
     <select id="getTickerList" resultType="java.lang.String">
         SELECT distinct ticker FROM stock;
+    </select>
+
+    <select id="getBetaByDate" resultType="java.lang.String">
+        SELECT beta FROM stockBeta where ticker=#{ticker} and startDate=#{start} and endDate=#{end};
     </select>
 
     <select id="getMarketDailyReturn" resultType="java.lang.String">

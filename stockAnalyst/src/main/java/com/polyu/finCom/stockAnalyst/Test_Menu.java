@@ -120,6 +120,7 @@ public class Test_Menu implements ActionListener {
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         mapper.createNewTable("stock");
         mapper.createMarketTable("market");
+        mapper.createBetaTable("stockBeta");
         sqlSession.close();
 
         jFrame.setJMenuBar(menuBar);
