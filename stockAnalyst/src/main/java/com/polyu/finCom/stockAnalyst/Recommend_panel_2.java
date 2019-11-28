@@ -30,6 +30,7 @@ public class Recommend_panel_2{
     private StockInfo portfolio;
     List<StockInfo> stockInfos = new ArrayList<>();
     List<StockInfo> calculated_stockInfos;
+    List<StockInfo> optimized_stockInfos;
     PanelService panelService = new PanelService();
 
     public void setStockInfos(StockInfo[] stockInfos,double RFR) {
@@ -45,6 +46,7 @@ public class Recommend_panel_2{
         risk_free_rate.setTicker("riskFree");
         risk_free_rate.setWeight(0.0);
         risk_free_rate.setRiskFree(RFR);
+        risk_free_rate.setReturnRate(RFR);
         rowData[stockInfos.length][0] = "Risk Free Rate";
         rowData[stockInfos.length][1] = 0.0;
         rowData[stockInfos.length][4] = RFR;
@@ -65,7 +67,11 @@ public class Recommend_panel_2{
         //tableModel.insertRow(stockInfos.length+1,rowData[stockInfos.length+1]);
         /*tableModel.setValueAt("Portfolio",stockInfos.length+1,0);*/
 
-
+        // Optimized Portfolio
+        optimized_stockInfos = panelService.getOptimization(this.stockInfos);
+        for (StockInfo stock:optimized_stockInfos){
+            System.out.println(stock.getTicker() + "的weight： " + stock.getWeight());
+        }
     }
 
 
