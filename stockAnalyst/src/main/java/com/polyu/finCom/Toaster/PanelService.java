@@ -6,8 +6,10 @@ import com.polyu.finCom.Model.StockInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.awt.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,11 +166,18 @@ PanelService {
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         List<List<Double>> retData = new ArrayList<>();
-        List<String> dates = mapper.getDatesByRange(condition.get(0).getStartDate(), condition.get(0).getEndDate());
         List<Double> eFactor = new ArrayList<>();
+        List<String> conditionStocks = condition.stream()
+                .filter(s -> !"riskFree".equals(s.getTicker()))
+                .map(StockInfo::getTicker)
+                .collect(Collectors.toList());
+        List<String> dates = mapper.getCommonDates(conditionStocks);
         for (StockInfo stockInfo : condition) {
-            if (stockInfo.getRiskFree() == null) {
-                List<Double> stockRates = mapper.getReturnRatesByTickers(stockInfo.getStartDate(), stockInfo.getEndDate());
+            if (!"riskFree".equals(stockInfo.getTicker())) {
+                List<Double> stockRates = new ArrayList<>();
+                for (String date : dates) {
+                    stockRates.add(mapper.getReturnRatesByDate(date, stockInfo.getTicker()));
+                }
                 retData.add(stockRates);
             } else {
                 List<Double> riskFreeRates = new ArrayList<>();
@@ -224,7 +233,7 @@ PanelService {
             } else {
                 info = stockInfo;
                 info.setReturnRate(info.getRiskFree());
-                info.setAlpha(0.0)
+                info.setAlpha(info.getRiskFree())
                         .setBeta(0.0);
             }
             result.add(info);
@@ -237,6 +246,7 @@ PanelService {
                 .setAlpha(alpha)
                 .setRisk(Math.sqrt(this.getMarketRisk(condition.get(0).getStartDate(), condition.get(0).getEndDate())))
                 .setReturnRate(resurnRate)
+                .setWeight(1.0)
                 .setTicker("Portfolio");
         result.add(overall);
         return result;
@@ -252,4 +262,5 @@ PanelService {
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         return sqlSession;
     }
+
 }

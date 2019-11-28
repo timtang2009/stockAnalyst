@@ -95,6 +95,13 @@
         select sum(vol) from stock where `date` between #{start} and #{end} and `ticker`=#{ticker};
     </select>
 
+    <select id="getCommonDates" resultType="java.lang.String">
+        select s.`date` from stock s where 1 = 1
+        <foreach collection="stocks" separator=" " item="stock">
+            and exists(select 1 from stock t where t.ticker=#{stock} and t.`date`=s.`date`)
+        </foreach>
+    </select>
+
     <select id="getFullVol" resultType="java.lang.Integer">
         select sum(vol) from stock where `date` between #{start} and #{end};
     </select>
@@ -105,6 +112,10 @@
 
     <select id="getReturnRatesByTickers" resultType="java.lang.Double">
         select returnRate from stock where ticker = #{ticker} and `date` between #{start} and #{end};
+    </select>
+
+    <select id="getReturnRatesByDate" resultType="java.lang.Double">
+        select returnRate from stock where ticker = #{ticker} and `date` = #{date};
     </select>
 
     <select id="getTickerInRange" resultType="java.lang.String">

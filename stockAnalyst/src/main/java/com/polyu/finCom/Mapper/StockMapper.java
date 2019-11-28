@@ -21,6 +21,8 @@ public interface StockMapper {
 
     void insert(Stock stock);
 
+    List<String> getCommonDates(@Param("stocks") List<String> stocks);
+
     void insertBeta(StockInfo stock);
 
     String getBetaByDate(@Param("ticker") String ticker, @Param("start") String start, @Param("end") String end);
@@ -30,6 +32,8 @@ public interface StockMapper {
     void insertMarket(Map<String, String> map);
 
     List<String> getTickerList();
+
+    Double getReturnRatesByDate(@Param("date") String date, @Param("ticker") String ticker);
 
     Map<String, String> getStartEndDate(String ticker);
 
@@ -47,5 +51,5 @@ public interface StockMapper {
 
     List<String> getDatesByRange(@Param("start") String start, @Param("end") String end);
 
-    List<Double> getReturnRatesByTickers(@Param("start") String start, @Param("end") String end);
+    List<Double> getReturnRatesByTickers(@Param("ticker") String ticker, @Param("start") String start, @Param("end") String end);
 }
