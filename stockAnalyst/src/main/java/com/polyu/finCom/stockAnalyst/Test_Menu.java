@@ -479,6 +479,14 @@ public class Test_Menu implements ActionListener {
             }
         });
 
+        //Recommend panel 2 optimized功能
+        recommend_panel_2.getjButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                recommend_panel_2.setOptimized_stockInfos();
+            }
+        });
+
         return panel;
     }
 
