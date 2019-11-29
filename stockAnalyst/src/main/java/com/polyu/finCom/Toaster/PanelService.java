@@ -6,10 +6,7 @@ import com.polyu.finCom.Model.StockInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import java.awt.*;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +104,14 @@ PanelService {
             returnRate += stockInfoList.get(i).getReturnRate() * stockInfoList.get(i).getWeight();
         }
         return returnRate;
+    }
+
+    public List<Stock> getStockList(String ticker, String startDate, String endDate) {
+        SqlSession sqlSession = getSession();
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        List<Stock> stockList = mapper.findStockByTicker(ticker, startDate, endDate);
+        sqlSession.close();
+        return stockList;
     }
 
     //calculate the daily return rate market portfolio
