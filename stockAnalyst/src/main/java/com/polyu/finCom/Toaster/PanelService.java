@@ -49,6 +49,7 @@ PanelService {
                 .collect(Collectors.toList()));
         stockInfo.setSharpRatio((stockInfo.getReturnRate() - riskFree) / stockInfo.getRisk());
         stockInfo.setRiskFree(riskFree);
+        stockInfo.setAnnualRate(stockInfo.getReturnRate() * 250);
         sqlSession.close();
         return stockInfo;
 
@@ -251,6 +252,7 @@ PanelService {
                 .setAlpha(alpha)
                 .setRisk(Math.sqrt(this.getMarketRisk(condition.get(0).getStartDate(), condition.get(0).getEndDate())))
                 .setReturnRate(resurnRate)
+                .setAnnualRate(resurnRate * 250)
                 .setWeight(1.0)
                 .setTicker("Portfolio");
         result.add(overall);

@@ -11,6 +11,8 @@ public class StockInfo {
     private String endDate;
     //ra
     private Double returnRate;
+    //annual rate
+    private Double annualRate;
     //权重
     private Double weight;
     //risk
@@ -67,6 +69,15 @@ public class StockInfo {
 
     public StockInfo setEndDate(String endDate) {
         this.endDate = endDate;
+        return this;
+    }
+
+    public Double getAnnualRate() {
+        return annualRate;
+    }
+
+    public StockInfo setAnnualRate(Double annualRate) {
+        this.annualRate = annualRate;
         return this;
     }
 
