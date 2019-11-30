@@ -1,6 +1,7 @@
 package com.polyu.finCom.stockAnalyst;
 
 import com.polyu.finCom.Mapper.StockMapper;
+import com.polyu.finCom.Model.Stock;
 import com.polyu.finCom.Model.StockInfo;
 import com.polyu.finCom.Toaster.GetSessionFactory;
 import com.polyu.finCom.Toaster.PanelService;
@@ -18,7 +19,6 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -300,9 +300,11 @@ public class Test_Menu implements ActionListener {
                                 load_panel_now.getShowDate1().getText(),
                                 load_panel_now.getShowDate2().getText(),
                                 Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
+                        List<Stock> stocks = panelService.getStockList(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getShowDate1().getText(),load_panel_now.getShowDate2().getText());
                         if (stockInfo != null) {
                             load_panel_now_2.setStockInfo(stockInfo);
-                            load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+                            load_panel_now_2.init2();
+                            new Stocks_load(load_panel_now_2.getJfreeCandlestickChart(),stocks,2).run();
                         }
                         //跳转下一界面
                         layout.next(panel);
@@ -466,7 +468,7 @@ public class Test_Menu implements ActionListener {
                             stockInfos[i].setWeight(0.0);
                             stockInfos[i].setRiskFree(RFR);
                         }
-                        recommend_panel_2.setStockInfos(stockInfos,RFR);
+                        recommend_panel_2.setStockInfos(stockInfos);
                         recommend_panel_2.init2();
                         layout.next(panel);
                     }else {

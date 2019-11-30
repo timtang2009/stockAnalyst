@@ -104,7 +104,7 @@ public class Recommend_panel_1 {
         del = new JButton("DEL");
         RFR = new JLabel("Risk free risk");
         RFR_text = new JTextField();
-        commit = new JButton("COMMIT");
+        commit = new JButton("SUMMIT");
 
         // 创建滚动面板，垂直一直显示，水平从不显示
         jScrollPane = new JScrollPane(stock_list,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

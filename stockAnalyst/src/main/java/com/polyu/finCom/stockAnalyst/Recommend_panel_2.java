@@ -49,7 +49,7 @@ public class Recommend_panel_2{
     List<StockInfo> optimized_stockInfos;
     PanelService panelService = new PanelService();
 
-    public void setStockInfos(StockInfo[] stockInfos,double RFR) {
+    public void setStockInfos(StockInfo[] stockInfos) {
 
         //所有Stock信息和Risk Free Offset和Portfolio
         rowData = new Object[stockInfos.length+1][columnNames.length];
@@ -71,9 +71,6 @@ public class Recommend_panel_2{
 
         //Portfolio
         rowData[stockInfos.length][0] = "Portfolio";
-        rowData[stockInfos.length][1] = 0.0;
-        rowData[stockInfos.length][4] = 0.0;
-        rowData[stockInfos.length][5] = 0.0;
 
     }
 
@@ -90,14 +87,14 @@ public class Recommend_panel_2{
             optimized_rowData[i][1] = optimized_stockInfos.get(i).getWeight();
             optimized_rowData[i][2] = optimized_stockInfos.get(i).getStartDate();
             optimized_rowData[i][3] = optimized_stockInfos.get(i).getEndDate();
-            optimized_rowData[i][4] = optimized_stockInfos.get(i).getReturnRate();
+            optimized_rowData[i][4] = optimized_stockInfos.get(i).getAnnualRate();
             optimized_rowData[i][5] = optimized_stockInfos.get(i).getRisk();
             optimized_rowData[i][6] = optimized_stockInfos.get(i).getBeta();
         }
 
         optimized_rowData[optimized_stockInfos.size()-1][0] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getTicker();
         optimized_rowData[optimized_stockInfos.size()-1][1] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getWeight();
-        optimized_rowData[optimized_stockInfos.size()-1][4] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getReturnRate();
+        optimized_rowData[optimized_stockInfos.size()-1][4] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getAnnualRate();
         optimized_rowData[optimized_stockInfos.size()-1][5] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getRisk();
         optimized_rowData[optimized_stockInfos.size()-1][6] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getBeta();
 
@@ -308,7 +305,7 @@ public class Recommend_panel_2{
                             }
                             calculated_stockInfos = panelService.getBatchInterest(stockInfos);
                             StockInfo portfolio = calculated_stockInfos.get(calculated_stockInfos.size()-1);
-                            tableModel.setValueAt(portfolio.getReturnRate(),tableModel.getRowCount()-1,4);
+                            tableModel.setValueAt(portfolio.getAnnualRate(),tableModel.getRowCount()-1,4);
                             tableModel.setValueAt(portfolio.getRisk(),tableModel.getRowCount()-1,5);
                             tableModel.setValueAt(portfolio.getBeta(),tableModel.getRowCount()-1,6);
                             System.out.println("通过");
@@ -346,8 +343,6 @@ public class Recommend_panel_2{
         scrollPane.setLocation(5,65);
         scrollPane.setSize(900,300);
 
-
-
         // 添加 滚动面板 到 内容面板
         panel.add(scrollPane);
 
@@ -374,11 +369,8 @@ public class Recommend_panel_2{
         rowData[rowIndex][1] =stockInfo.getWeight();
         rowData[rowIndex][2] =stockInfo.getStartDate();
         rowData[rowIndex][3] =stockInfo.getEndDate();
-        rowData[rowIndex][4] =stockInfo.getReturnRate();
+        rowData[rowIndex][4] =stockInfo.getAnnualRate();
         rowData[rowIndex][5] =stockInfo.getRisk();
         rowData[rowIndex][6] =panelService.getStockBeta(stockInfo.getTicker(),stockInfo.getStartDate(),stockInfo.getEndDate());
     }
-
-
-
 }
