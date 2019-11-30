@@ -45,7 +45,7 @@ public class Stocks_load {
 
                     //Add trade to the jfreeCandlestickChart
                     jfreeCandlestickChart.addCandel(day,open,high,low,close,volume);
-                    System.out.println(day);
+
                 }
 
             }else {
@@ -54,6 +54,8 @@ public class Stocks_load {
         }catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ParseException e) {
+            e.printStackTrace();
+        }catch (IllegalArgumentException e){
             e.printStackTrace();
         }
 

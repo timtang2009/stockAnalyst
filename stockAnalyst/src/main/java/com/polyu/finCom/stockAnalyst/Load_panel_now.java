@@ -38,21 +38,13 @@ public class Load_panel_now {
     }
 
     private JComboBox<String> Ticker;
-//        private JLabel start_date_label;
-//        private JLabel end_date_label;
-        private JLabel showDate1;
-        private JLabel showDate2;
-        private JButton show_all_details;
-        private JLabel risk_free_rate_label;
-        private JTextField risk_free_rate;
+    private JLabel showDate1;
+    private JLabel showDate2;
+    private JButton show_all_details;
+    private JLabel risk_free_rate_label;
+    private JTextField risk_free_rate;
 
-
-
-    private JCheckBox return_rate;
-        private JCheckBox risk;
-        private JCheckBox coefficient;
-        private JCheckBox K;
-        PanelService panelService = new PanelService();
+    PanelService panelService = new PanelService();
 
     public JPanel getPanel() {
         return panel;
@@ -84,22 +76,6 @@ public class Load_panel_now {
         return this;
     }
 
-    public JCheckBox getReturn_rate() {
-        return return_rate;
-    }
-
-    public JCheckBox getRisk() {
-        return risk;
-    }
-
-    public JCheckBox getCoefficient() {
-        return coefficient;
-    }
-
-    public JCheckBox getK() {
-        return K;
-    }
-
     public JTextField getRisk_free_rate() {
         return risk_free_rate;
     }
@@ -116,19 +92,23 @@ public class Load_panel_now {
         Ticker.setRenderer(new MyComboBoxRenderer("Stock"));
         Ticker.setSelectedIndex(-1);
 
-
         show_all_details = new JButton("Show all details");
+        show_all_details.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         risk_free_rate_label = new JLabel("Risk free rate");
+        risk_free_rate_label.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         risk_free_rate = new JTextField();
-        return_rate = new JCheckBox("return rate");
-        risk = new JCheckBox("risk");
-        coefficient = new JCheckBox("coefficient");
-        K = new JCheckBox("K");
+        risk_free_rate.setFont(new Font("TimesRoman",Font.BOLD,16));
 
         DateChooser dateChooser1 = DateChooser.getInstance("yyyyMMdd");
         DateChooser dateChooser2 = DateChooser.getInstance("yyyyMMdd");
         showDate1 = new JLabel("choose start date");
+        showDate1.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         showDate2 = new JLabel("choose end date");
+        showDate2.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         showDate1.setToolTipText("Start date");
         showDate2.setToolTipText("End date");
 
@@ -139,47 +119,29 @@ public class Load_panel_now {
         Ticker.setLocation(50,50);
         //Ticker 宽高
         Ticker.setSize(200,100);
-        //Textfield 坐标和宽高
-//        start_date_label.setLocation(50,250);
-//        start_date_label.setSize(90,50);
-//        end_date_label.setLocation(50,450);
-//        end_date_label.setSize(90,50);
-        showDate1.setLocation(50,250);
-        showDate1.setSize(180,50);
-        showDate2.setLocation(50,450);
-        showDate2.setSize(180,50);
-        //Button坐标和宽高
-        show_all_details.setLocation(100,650);
-        show_all_details.setSize(200,100);
-        //Risk free rate坐标和宽高
-        risk_free_rate_label.setLocation(650,50);
-        risk_free_rate_label.setSize(90,50);
-        risk_free_rate.setLocation(750,50);
-        risk_free_rate.setSize(200,100);
-        //四个CheckBox坐标和宽高
-        /*return_rate.setLocation(650,50);
-        return_rate.setSize(200,100);
-        risk.setLocation(650,250);
-        risk.setSize(200,100);
-        coefficient.setLocation(650,450);
-        coefficient.setSize(200,100);
-        K.setLocation(650,650);
-        K.setSize(200,100);*/
 
-        //Ticker默认选中项目
-        //Ticker.setSelectedIndex(0);
+        showDate1.setLocation(50,250);
+        showDate1.setSize(230,50);
+        showDate2.setLocation(50,450);
+        showDate2.setSize(230,50);
+
+        //Button坐标和宽高
+        show_all_details.setLocation(650,450);
+        show_all_details.setSize(200,100);
+
+        //Risk free rate坐标和宽高
+        risk_free_rate_label.setLocation(650,150);
+        risk_free_rate_label.setSize(130,50);
+        risk_free_rate.setLocation(800,150);
+        risk_free_rate.setSize(100,50);
+
         panel.add(Ticker);
-//        panel.add(start_date_label);
-//        panel.add(end_date_label);
         panel.add(showDate1, BorderLayout.NORTH);
         panel.add(showDate2, BorderLayout.SOUTH);
         panel.add(show_all_details);
         panel.add(risk_free_rate_label);
         panel.add(risk_free_rate);
-        //panel.add(return_rate);
-        //panel.add(risk);
-        //panel.add(coefficient);
-        //panel.add(K);
+
     }
 
     // 比较设定开始时间和结束时间是否有超出股票时间期限
