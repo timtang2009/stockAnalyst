@@ -17,8 +17,6 @@ import java.util.Map;
 
 public class Toaster {
 
-    private static Logger logger = LogManager.getLogger(LogManager.ROOT_LOGGER_NAME);
-
     private Calculator calculator = new Calculator();
 
     public String readFile(String path) {
@@ -61,7 +59,7 @@ public class Toaster {
             }
             sqlSession.close();
         } catch (Exception e) {
-            logger.error("fail to read File from {}", path, e);
+//            logger.error("fail to read File from {}", path, e);
         }
         return null;
     }
