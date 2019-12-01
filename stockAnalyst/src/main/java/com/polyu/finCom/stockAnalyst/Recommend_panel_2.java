@@ -57,17 +57,6 @@ public class Recommend_panel_2{
             init_set_value(stockInfos[row],row);
             this.stockInfos.add(stockInfos[row]);
         }
-        /*//Risk Free Offset    暂时协定删除
-        risk_free_rate = new StockInfo();
-        risk_free_rate.setTicker("riskFree");
-        risk_free_rate.setWeight(0.0);
-        risk_free_rate.setRiskFree(RFR);
-        risk_free_rate.setReturnRate(RFR);
-        rowData[stockInfos.length][0] = "Risk Free Rate";
-        rowData[stockInfos.length][1] = 0.0;
-        rowData[stockInfos.length][4] = RFR;
-        rowData[stockInfos.length][5] = 0.0;
-        this.stockInfos.add(risk_free_rate);*/
 
         //Portfolio
         rowData[stockInfos.length][0] = "Portfolio";
@@ -166,12 +155,13 @@ public class Recommend_panel_2{
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         scrollPane2 = new JScrollPane(table2);
 
-        scrollPane2.setLocation(5,440);
+        scrollPane2.setLocation(50,440);
         scrollPane2.setSize(900,300);
 
         optimize = new JLabel("Optimized portfolio");
-        optimize.setLocation(445,380);
-        optimize.setSize(130,50);
+        optimize.setFont(new Font("TimesRoman",Font.BOLD,16));
+        optimize.setLocation(455,380);
+        optimize.setSize(170,50);
 
         panel.add(optimize);
         panel.add(scrollPane2);
@@ -189,13 +179,15 @@ public class Recommend_panel_2{
         // 表头（列名）
         columnNames = new Object[]{"Name", "Weight", "Start Date", "End Date", "Return Rate", "Risk", "β"};
 
-        jButton = new JButton("Optimize portofolio");
-        jButton.setLocation(950,180);
-        jButton.setSize(200,100);
+        jButton = new JButton("Optimize portfolio");
+        jButton.setFont(new Font("TimesRoman",Font.BOLD,16));
+        jButton.setLocation(970,340);
+        jButton.setSize(170,100);
 
         customize = new JLabel("Customized portfolio");
-        customize.setLocation(445,5);
-        customize.setSize(130,50);
+        customize.setFont(new Font("TimesRoman",Font.BOLD,16));
+        customize.setLocation(455,5);
+        customize.setSize(170,50);
 
 
         panel.add(jButton);
@@ -205,20 +197,6 @@ public class Recommend_panel_2{
     }
 
     public void init2(){
-        // 创建内容面板
-        //panel = new JPanel();
-
-        // 表头（列名）
-        //columnNames = new Object[]{"Name", "Weight", "Start Date", "End Date", "Return Rate", "Risk", "β"};
-
-        // 表格所有行数据
-        /*rowData = new Object[][]{
-
-        };*/
-
-        //tableModel = new DefaultTableModel(rowData,columnNames);
-        //table = new JTable(tableModel);
-
 
          //自定义表格模型，创建一个表格
         table = new JTable(new AbstractTableModel() {
@@ -278,14 +256,11 @@ public class Recommend_panel_2{
                 //     TableModelEvent.DELETE   有行或列被移除
                 int type = e.getType();
 
-                System.out.println("改变开始行数： " + e.getFirstRow());
-                System.out.println("改变结束行数： " + e.getLastRow());
                 // 针对 现有数据的更改 更新其他单元格数据
                 //当weight等于1时才进行输出
                 //其他时候不作任何输出
                 if (type == TableModelEvent.UPDATE) {
                     double weight_sum = 0;
-
 
                     // 只处理weight这一列
                     // 最后一行是总数
@@ -301,14 +276,14 @@ public class Recommend_panel_2{
                         if (weight_sum == 1.0){
                             for (int i = 0; i < stockInfos.size(); i++) {
                                 stockInfos.get(i).setWeight(Double.parseDouble(tableModel.getValueAt(i,column).toString()));
-                                System.out.println(i + " 行：" + stockInfos.get(i).getWeight());
+
                             }
                             calculated_stockInfos = panelService.getBatchInterest(stockInfos);
                             StockInfo portfolio = calculated_stockInfos.get(calculated_stockInfos.size()-1);
                             tableModel.setValueAt(portfolio.getAnnualRate(),tableModel.getRowCount()-1,4);
                             tableModel.setValueAt(portfolio.getRisk(),tableModel.getRowCount()-1,5);
                             tableModel.setValueAt(portfolio.getBeta(),tableModel.getRowCount()-1,6);
-                            System.out.println("通过");
+
                         }
                     }
                 }
@@ -340,7 +315,7 @@ public class Recommend_panel_2{
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         scrollPane = new JScrollPane(table);
 
-        scrollPane.setLocation(5,65);
+        scrollPane.setLocation(50,65);
         scrollPane.setSize(900,300);
 
         // 添加 滚动面板 到 内容面板
