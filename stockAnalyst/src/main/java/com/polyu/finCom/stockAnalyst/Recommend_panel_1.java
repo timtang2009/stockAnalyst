@@ -34,6 +34,8 @@ public class Recommend_panel_1 {
     private JLabel RFR;
     private JTextField RFR_text;
     private JButton commit;
+    private JLabel input_list;
+    private JLabel output_list;
 
     private String[] input_ticker_information;
 
@@ -95,97 +97,74 @@ public class Recommend_panel_1 {
     private void init(){
         //Ticker初始化
         input_ticker_information = new String[]{""};
-        //output_ticker_information = new String[]{""};
 
         //元素初始化
         stock_list = new JList<String>(input_ticker_information);
+        stock_list.setFont(new Font("TimesRoman",Font.BOLD,14));
+
         output_stock_list = new JList<String>();
+        output_stock_list.setFont(new Font("TimesRoman",Font.BOLD,14));
+
         add = new JButton("ADD");
+        add.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         del = new JButton("DEL");
+        del.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         RFR = new JLabel("Risk free risk");
+        RFR.setFont(new Font("TimesRoman",Font.BOLD,16));
+
         RFR_text = new JTextField();
-        commit = new JButton("COMMIT");
+        RFR_text.setFont(new Font("TimesRoman",Font.BOLD,14));
+
+        commit = new JButton("SUBMIT");
+        commit.setFont(new Font("TimesRoman",Font.BOLD,16));
+
+        input_list = new JLabel("Input list");
+        input_list.setFont(new Font("TimesRoman",Font.BOLD,16));
+
+        output_list = new JLabel("Output list");
+        output_list.setFont(new Font("TimesRoman",Font.BOLD,16));
 
         // 创建滚动面板，垂直一直显示，水平从不显示
         jScrollPane = new JScrollPane(stock_list,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1 = new JScrollPane(output_stock_list,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // GridBagLayout
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        jPanel = new JPanel(gridBagLayout);
-
-        // 使组件完全填满其显示区域
-        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        jPanel = new JPanel(null);
 
         //组件1：Stock list
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.gridheight = 6;
-        gridBagConstraints.weightx = 0.31;
-        gridBagConstraints.weighty = 0.6;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(jScrollPane,gridBagConstraints);
+        jScrollPane.setLocation(50,65);
+        jScrollPane.setSize(500,600);
 
         //组件2和3：RFR和RFR的Textfield
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 1;
-        gridBagConstraints.weightx = 0.15;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(RFR,gridBagConstraints);
+        RFR.setLocation(270,695);
+        RFR.setSize(130,50);
 
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 1;
-        gridBagConstraints.weightx = 0.15;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(RFR_text,gridBagConstraints);
+        RFR_text.setLocation(420,695);
+        RFR_text.setSize(100,50);
 
         // 组件4和5:ADD和DEL BUTTON
         // ADD
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.gridheight = 1;
-        gridBagConstraints.weightx = 0.15;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(add,gridBagConstraints);
+        add.setLocation(565,265);
+        add.setSize(70,50);
         // DEL
-        gridBagConstraints.gridx = 6;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.gridheight = 1;
-        gridBagConstraints.weightx = 0.15;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(del,gridBagConstraints);
+        del.setLocation(565,465);
+        del.setSize(70,50);
 
         // 组件6：output stock list
-        gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.gridheight = 6;
-        gridBagConstraints.weightx = 0.31;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(jScrollPane1,gridBagConstraints);
+        jScrollPane1.setLocation(650,65);
+        jScrollPane1.setSize(500,600);
 
         // 组件7：Commit
-        gridBagConstraints.gridx = 9;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 1;
-        gridBagConstraints.weightx = 0.15;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagLayout.setConstraints(commit,gridBagConstraints);
+        commit.setLocation(680,695);
+        commit.setSize(100,50);
+
+        // 组件8和9：Input and output list label
+        input_list.setLocation(275,15);
+        input_list.setSize(100,40);
+
+        output_list.setLocation(875,15);
+        output_list.setSize(100,40);
 
         //Panel添加组件
         jPanel.add(jScrollPane);
@@ -195,6 +174,8 @@ public class Recommend_panel_1 {
         jPanel.add(RFR);
         jPanel.add(RFR_text);
         jPanel.add(commit);
+        jPanel.add(input_list);
+        jPanel.add(output_list);
     }
 
     public Recommend_panel_1(){

@@ -1,6 +1,7 @@
 package com.polyu.finCom.stockAnalyst;
 
 import com.polyu.finCom.Mapper.StockMapper;
+import com.polyu.finCom.Model.Stock;
 import com.polyu.finCom.Model.StockInfo;
 import com.polyu.finCom.Toaster.GetSessionFactory;
 import com.polyu.finCom.Toaster.PanelService;
@@ -18,11 +19,10 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Test_Menu implements ActionListener {
+public class Stock_Main implements ActionListener {
     private static JFrame jFrame;
 
     public JPanel getWelcome_panel() {
@@ -44,10 +44,8 @@ public class Test_Menu implements ActionListener {
     //一级菜单的子菜单
     private JMenuItem openMenuItem;
     private JMenuItem loadMenuItem;
-    private JMenuItem rankMenuItem;
     private JMenuItem Build_PortfolioMenuItem;
-    private JMenuItem Recommend_PortfolioMenuItem;
-    private JMenuItem Optimize_PortfolioMenuItem;
+
 
     //文件Absolute path的String数组
     private String[] files_absolute_path;
@@ -66,7 +64,7 @@ public class Test_Menu implements ActionListener {
     //PanelService
     PanelService panelService = new PanelService();
 
-    public Test_Menu(){
+    public Stock_Main(){
         //欢迎页设立
         welcome_panel = createTextPanel("Welcome");
 
@@ -77,44 +75,38 @@ public class Test_Menu implements ActionListener {
         filemenu = new JMenu("File");
         stockmenu = new JMenu("Stock");
         Portfoliomenu = new JMenu("Portofio");
-        Optimizationmenu = new JMenu("Optimization");
+
         //添加一级菜单到菜单栏
         menuBar.add(filemenu);
         menuBar.add(stockmenu);
         menuBar.add(Portfoliomenu);
-        menuBar.add(Optimizationmenu);
 
         //创建一级菜单下的子菜单
         openMenuItem = new JMenuItem("Open");
         loadMenuItem = new JMenuItem("Load");
-        rankMenuItem = new JMenuItem("Rank");
         Build_PortfolioMenuItem = new JMenuItem("Build Portfolio");
-        Recommend_PortfolioMenuItem = new JMenuItem("Recommend Portfolio");
-        Optimize_PortfolioMenuItem = new JMenuItem("Optimize Portfolio");
+
+
         //子菜单添加到一级菜单
         filemenu.add(openMenuItem);
         stockmenu.add(loadMenuItem);
-        stockmenu.add(rankMenuItem);
         Portfoliomenu.add(Build_PortfolioMenuItem);
-        Optimizationmenu.add(Recommend_PortfolioMenuItem);
-        Optimizationmenu.add(Optimize_PortfolioMenuItem);
+
 
         //添加事件监听器
         openMenuItem.addActionListener(this);
         loadMenuItem.addActionListener(this);
-        rankMenuItem.addActionListener(this);
         Build_PortfolioMenuItem.addActionListener(this);
-        Recommend_PortfolioMenuItem.addActionListener(this);
-        Optimize_PortfolioMenuItem.addActionListener(this);
+
 
     }
 
     public static void main(String[] args) {
-        jFrame = new JFrame("Test");
+        jFrame = new JFrame("Stock Analyst");
         jFrame.setSize(1200,900);
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        Test_Menu test_menu = new Test_Menu();
+        Stock_Main stockMain = new Stock_Main();
         SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
         SqlSession sqlSession = sqlSessionFactory.openSession(true);
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
@@ -124,7 +116,7 @@ public class Test_Menu implements ActionListener {
         sqlSession.close();
 
         jFrame.setJMenuBar(menuBar);
-        jFrame.setContentPane(test_menu.getWelcome_panel());
+        jFrame.setContentPane(stockMain.getWelcome_panel());
         jFrame.setVisible(true);
     }
 
@@ -155,25 +147,11 @@ public class Test_Menu implements ActionListener {
             //jFrame.revalidate();
 
 
-        }else if (source == rankMenuItem){
-            showSpecifiedPanel(welcome_panel,createTextPanel("Rank"));
-            //jFrame.setContentPane(createTextPanel("Rank"));
-            //jFrame.revalidate();
-
         }else if (source == Build_PortfolioMenuItem){
             showSpecifiedPanel(welcome_panel,Recommend_card(jFrame));
             //jFrame.setContentPane(Recommend_card(jFrame));
             //jFrame.revalidate();
 
-        }else if (source == Recommend_PortfolioMenuItem){
-            showSpecifiedPanel(welcome_panel,createTextPanel("Recommend"));
-            //jFrame.setContentPane(createTextPanel("Recommend"));
-            //jFrame.revalidate();
-
-        }else if (source == Optimize_PortfolioMenuItem){
-            showSpecifiedPanel(welcome_panel,createTextPanel("Optimize"));
-            //jFrame.setContentPane(createTextPanel("Optimize"));
-            //jFrame.revalidate();
         }
     }
 
@@ -221,7 +199,6 @@ public class Test_Menu implements ActionListener {
             files_test = getFiles_absolute_path();
             for (int i = 0; i < files.length; i++) {
                 toaster.readFile(files_test[i]);
-                System.out.println(files_test[i]);
             }
 
             Thread thread=new Thread(new Runnable() {
@@ -234,8 +211,7 @@ public class Test_Menu implements ActionListener {
 
             //消息对话框提示保存成功
             JOptionPane.showMessageDialog(parent,"Files saved successfully","Notification",JOptionPane.INFORMATION_MESSAGE);
-            //第一次需导入文件后再打开load界面
-            //load_panel_now = new Load_panel_now();
+
         }
 
     }
@@ -282,10 +258,6 @@ public class Test_Menu implements ActionListener {
                 //跳转下个界面
                 //需要使用Stockinfo进行存取
                 if (source == load_panel_now.getShow_all_details()){
-                    System.out.println("Ticker information: " + load_panel_now.getTicker().getSelectedItem().toString());
-                    System.out.println("Start date: " + load_panel_now.getShowDate1().getText());
-                    System.out.println("End date: " + load_panel_now.getShowDate2().getText());
-
                     //日期判断
                     try {
                          date_state = load_panel_now.compare_start_end_date(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getShowDate1().getText(),load_panel_now.getShowDate2().getText());
@@ -300,9 +272,11 @@ public class Test_Menu implements ActionListener {
                                 load_panel_now.getShowDate1().getText(),
                                 load_panel_now.getShowDate2().getText(),
                                 Double.parseDouble(load_panel_now.getRisk_free_rate().getText()));
+                        List<Stock> stocks = panelService.getStockList(load_panel_now.getTicker().getSelectedItem().toString(),load_panel_now.getShowDate1().getText(),load_panel_now.getShowDate2().getText());
                         if (stockInfo != null) {
                             load_panel_now_2.setStockInfo(stockInfo);
-                            load_panel_now_2.create_form(stockInfo.getReturnRate(),stockInfo.getRisk(),stockInfo.getSharpRatio());
+                            load_panel_now_2.init2();
+                            new Stocks_load(load_panel_now_2.getJfreeCandlestickChart(),stocks,2).run();
                         }
                         //跳转下一界面
                         layout.next(panel);
@@ -402,10 +376,8 @@ public class Test_Menu implements ActionListener {
                         int location = 0;
                         for (int index:indices) {
                             output_list[location] = listModel.getElementAt(index);
-                            System.out.println("选中: " + index + "为" + output_list[location] );
                             location ++;
                         }
-                        location = 0;
                         recommend_panel_1.set_Output_Stock_list(output_list);
                     }else {
                         JOptionPane.showMessageDialog(parent,"Nothing to add","Notification",JOptionPane.INFORMATION_MESSAGE);
@@ -466,7 +438,7 @@ public class Test_Menu implements ActionListener {
                             stockInfos[i].setWeight(0.0);
                             stockInfos[i].setRiskFree(RFR);
                         }
-                        recommend_panel_2.setStockInfos(stockInfos,RFR);
+                        recommend_panel_2.setStockInfos(stockInfos);
                         recommend_panel_2.init2();
                         layout.next(panel);
                     }else {

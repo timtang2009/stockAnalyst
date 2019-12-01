@@ -2,7 +2,6 @@ package com.polyu.finCom.stockAnalyst;
 
 
 import com.polyu.finCom.Mapper.StockMapper;
-import com.polyu.finCom.Model.Stock;
 import com.polyu.finCom.Toaster.GetSessionFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.logging.Logger;
 
 public class StockAnalystPanel {
 
