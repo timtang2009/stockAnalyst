@@ -27,9 +27,9 @@ public class StockAnalystPanel {
     /**
      * Main Start
      */
-    public static void main(String[] args) {
-        new StockAnalystPanel();
-    }
+//    public static void main(String[] args) {
+//        new StockAnalystPanel();
+//    }
 
     private StockAnalystPanel() {
         //JFrame jf = new JFrame("Stock Analyser");
