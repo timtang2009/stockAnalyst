@@ -26,6 +26,13 @@ public class Stock_Main implements ActionListener {
     private static JFrame jFrame;
 
     public JPanel getWelcome_panel() {
+        SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
+        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        mapper.createNewTable("stock");
+        mapper.createMarketTable("market");
+        mapper.createBetaTable("stockBeta");
+        sqlSession.close();
         return welcome_panel;
     }
 
@@ -107,13 +114,6 @@ public class Stock_Main implements ActionListener {
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Stock_Main stockMain = new Stock_Main();
-        SqlSessionFactory sqlSessionFactory= GetSessionFactory.getSqlSessionFactory();
-        SqlSession sqlSession = sqlSessionFactory.openSession(true);
-        StockMapper mapper = sqlSession.getMapper(StockMapper.class);
-        mapper.createNewTable("stock");
-        mapper.createMarketTable("market");
-        mapper.createBetaTable("stockBeta");
-        sqlSession.close();
 
         jFrame.setJMenuBar(menuBar);
         jFrame.setContentPane(stockMain.getWelcome_panel());
