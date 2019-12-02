@@ -6,6 +6,7 @@ import com.polyu.finCom.Model.StockInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class PanelService {
         stockInfo = calculator.AveIntRate(stockInfo, stocks.stream()
                 .map(Stock::getClose)
                 .collect(Collectors.toList()));
-        stockInfo.setSharpRatio((stockInfo.getReturnRate() - riskFree) / stockInfo.getRisk());
+        stockInfo.setSharpRatio((stockInfo.getReturnRate() - riskFree/250) / stockInfo.getRisk());
         stockInfo.setRiskFree(riskFree);
         stockInfo.setAnnualRate(stockInfo.getReturnRate() * 250);
         sqlSession.close();
@@ -64,29 +65,28 @@ public class PanelService {
         double portRisk = 0.0;
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
+        List<String> conditionStocks = stockInfoList.stream()
+                .filter(s -> !"riskFree".equals(s.getTicker()))
+                .map(StockInfo::getTicker)
+                .collect(Collectors.toList());
+        List<String> dateRange = mapper.getDatesByRange(stockInfoList.get(0).getStartDate(), stockInfoList.get(0).getEndDate());
+        List<String> dates = getCommonDates(conditionStocks, dateRange, mapper);
         Map<String, List<Double>> record = new HashMap<>();
         for(int i = 0; i < stockInfoList.size(); i++) {
-            StockInfo stockInfo = this.getStockInfo(stockInfoList.get(i).getTicker(), stockInfoList.get(i).getStartDate(),
-                    stockInfoList.get(i).getEndDate(), stockInfoList.get(i).getRiskFree());
-            portRisk += stockInfo.getWeight() * stockInfo.getWeight() * stockInfo.getRisk() * stockInfo.getRisk();
-            List<Double> recordData1 = mapper.getCloseRecord(stockInfoList.get(i).getTicker(), stockInfoList.get(i).getStartDate(),
-                    stockInfoList.get(i).getEndDate());
+            List<Double> recordData1 = this.getDataByDate(dates, stockInfoList.get(i).getTicker(), mapper);
             if (recordData1 != null && recordData1.size() > 0) {
-                record.put(stockInfo.getTicker(), recordData1);
+                record.put(stockInfoList.get(i).getTicker(), recordData1);
             }
             for (int j = 0; j < stockInfoList.size(); j++) {
-                if (record.get(stockInfoList.get(i).getTicker()) != null) {
-                    portRisk += 2 * stockInfoList.get(i).getWeight() * stockInfoList.get(j).getWeight()
-                            * calculator.covariance(recordData1, record.get(stockInfoList.get(i).getTicker()));
+                if (record.get(stockInfoList.get(j).getTicker()) != null) {
+                    double cov = calculator.covariance(recordData1, record.get(stockInfoList.get(j).getTicker()));
+                    portRisk += stockInfoList.get(i).getWeight() * stockInfoList.get(j).getWeight() * cov;
                 } else {
-                    StockInfo stockInfo2 = this.getStockInfo(stockInfoList.get(j).getTicker(), stockInfoList.get(j).getStartDate(),
-                            stockInfoList.get(j).getEndDate(), stockInfoList.get(j).getRiskFree());
-                    List<Double> recordData2 = mapper.getCloseRecord(stockInfoList.get(j).getTicker(), stockInfoList.get(j).getStartDate(),
-                            stockInfoList.get(j).getEndDate());
+                    List<Double> recordData2 = this.getDataByDate(dates, stockInfoList.get(j).getTicker(), mapper);
                     if (recordData2 != null && recordData2.size() > 0) {
-                        record.put(stockInfo2.getTicker(), recordData2);
+                        record.put(stockInfoList.get(j).getTicker(), recordData2);
                     }
-                    portRisk += 2 * stockInfoList.get(i).getWeight() * stockInfoList.get(j).getWeight()
+                    portRisk += stockInfoList.get(i).getWeight() * stockInfoList.get(j).getWeight()
                             * calculator.covariance(recordData1, recordData2);
                 }
 
@@ -94,7 +94,24 @@ public class PanelService {
         }
         sqlSession.close();
         return portRisk;
+    }
 
+    private List<String> getCommonDates(List<String> stocks, List<String> dateRange, StockMapper mapper) {
+        List<String> commonDates = new ArrayList<>();
+        for (String date : dateRange) {
+            String tag = mapper.getCommonDates(stocks, date);
+            if ("1".equals(tag))
+                commonDates.add(date);
+        }
+        return commonDates;
+    }
+
+    private List<Double> getDataByDate(List<String> dates, String ticker, StockMapper mapper) {
+        List<Double> stockRates = new ArrayList<>();
+        for (String date : dates) {
+            stockRates.add(mapper.getReturnRatesByDate(date, ticker));
+        }
+        return stockRates;
     }
 
     //calculate the Average Return Rate of portfolio
@@ -176,7 +193,8 @@ public class PanelService {
                 .filter(s -> !"riskFree".equals(s.getTicker()))
                 .map(StockInfo::getTicker)
                 .collect(Collectors.toList());
-        List<String> dates = mapper.getCommonDates(conditionStocks);
+        List<String> dateRange = mapper.getDatesByRange(condition.get(0).getStartDate(), condition.get(0).getEndDate());
+        List<String> dates = getCommonDates(conditionStocks, dateRange, mapper);
         for (StockInfo stockInfo : condition) {
             if (!"riskFree".equals(stockInfo.getTicker())) {
                 List<Double> stockRates = new ArrayList<>();
@@ -187,10 +205,10 @@ public class PanelService {
             } else {
                 List<Double> riskFreeRates = new ArrayList<>();
                 for (int i = 0; i < dates.size(); i++)
-                    riskFreeRates.add(stockInfo.getRiskFree());
+                    riskFreeRates.add(stockInfo.getRiskFree()/250);
                 retData.add(riskFreeRates);
             }
-            eFactor.add(stockInfo.getReturnRate() - stockInfo.getRiskFree());
+            eFactor.add(stockInfo.getReturnRate() - stockInfo.getRiskFree()/250);
         }
         double[][] covRates = new double[condition.size()][condition.size()];
         if (retData.size() > 0) {
@@ -249,7 +267,7 @@ public class PanelService {
         StockInfo overall = new StockInfo();
         overall.setBeta(beta)
                 .setAlpha(alpha)
-                .setRisk(Math.sqrt(this.getMarketRisk(condition.get(0).getStartDate(), condition.get(0).getEndDate())))
+                .setRisk(Math.sqrt(this.getPortRisk(condition)))
                 .setReturnRate(resurnRate)
                 .setAnnualRate(resurnRate * 250)
                 .setWeight(1.0)

@@ -96,10 +96,11 @@
     </select>
 
     <select id="getCommonDates" resultType="java.lang.String">
-        select s.`date` from stock s where 1 = 1
+        select 1 from stock s where 1 = 1
         <foreach collection="stocks" separator=" " item="stock">
-            and exists(select 1 from stock t where t.ticker=#{stock} and t.`date`=s.`date`)
+            and exists(select 1 from stock t where t.ticker=#{stock} and t.`date`=#{date})
         </foreach>
+        limit 1
     </select>
 
     <select id="getFullVol" resultType="java.lang.Integer">

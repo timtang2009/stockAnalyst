@@ -21,7 +21,7 @@ public interface StockMapper {
 
     void insert(Stock stock);
 
-    List<String> getCommonDates(@Param("stocks") List<String> stocks);
+    String getCommonDates(@Param("stocks") List<String> stocks, @Param("date") String date);
 
     void insertBeta(StockInfo stock);
 
@@ -37,7 +37,7 @@ public interface StockMapper {
 
     Map<String, String> getStartEndDate(String ticker);
 
-    List<Double> getCloseRecord(String ticker, String start, String end);
+    List<Double> getCloseRecord(@Param("ticker") String ticker, @Param("start") String start, @Param("end") String end);
 
     Integer getVolByTicker(@Param("start") String start, @Param("end") String end, @Param("ticker") String ticker);
 
