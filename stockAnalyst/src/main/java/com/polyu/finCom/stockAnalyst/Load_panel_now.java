@@ -95,7 +95,7 @@ public class Load_panel_now {
         show_all_details = new JButton("Show all details");
         show_all_details.setFont(new Font("TimesRoman",Font.BOLD,16));
 
-        risk_free_rate_label = new JLabel("Risk free rate");
+        risk_free_rate_label = new JLabel("Risk free rate(annual)");
         risk_free_rate_label.setFont(new Font("TimesRoman",Font.BOLD,16));
 
         risk_free_rate = new JTextField();
@@ -131,8 +131,8 @@ public class Load_panel_now {
 
         //Risk free rate坐标和宽高
         risk_free_rate_label.setLocation(650,150);
-        risk_free_rate_label.setSize(130,50);
-        risk_free_rate.setLocation(800,150);
+        risk_free_rate_label.setSize(180,50);
+        risk_free_rate.setLocation(845,150);
         risk_free_rate.setSize(100,50);
 
         panel.add(Ticker);

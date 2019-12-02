@@ -36,7 +36,8 @@ public class Stocks_load {
                 for (Stock stock: stocks) {
                     Thread.sleep(simulationTime);
                     Date myDate = standardDateFormat.parse(stock.getDate());
-                    Day day = new Day(myDate);
+                    //Day day = new Day(myDate);
+                    
                     Double open = Double.parseDouble(stock.getOpen());
                     Double high = Double.parseDouble(stock.getHigh());
                     Double low = Double.parseDouble(stock.getLow());
@@ -44,7 +45,7 @@ public class Stocks_load {
                     Long volume = Long.parseLong(stock.getVol().toString());
 
                     //Add trade to the jfreeCandlestickChart
-                    jfreeCandlestickChart.addCandel(day,open,high,low,close,volume);
+                    jfreeCandlestickChart.addCandel(myDate.getTime(),open,high,low,close,volume);
 
                 }
 

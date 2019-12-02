@@ -111,7 +111,7 @@ public class Recommend_panel_1 {
         del = new JButton("DEL");
         del.setFont(new Font("TimesRoman",Font.BOLD,16));
 
-        RFR = new JLabel("Risk free risk");
+        RFR = new JLabel("Risk free rate(annual)");
         RFR.setFont(new Font("TimesRoman",Font.BOLD,16));
 
         RFR_text = new JTextField();
@@ -138,9 +138,9 @@ public class Recommend_panel_1 {
 
         //组件2和3：RFR和RFR的Textfield
         RFR.setLocation(270,695);
-        RFR.setSize(130,50);
+        RFR.setSize(180,50);
 
-        RFR_text.setLocation(420,695);
+        RFR_text.setLocation(470,695);
         RFR_text.setSize(100,50);
 
         // 组件4和5:ADD和DEL BUTTON
