@@ -13,6 +13,7 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,10 @@ public class Recommend_panel_2{
 
     private StockInfo risk_free_rate;
     private StockInfo portfolio;
+
+    //百分数
+    NumberFormat percentInstance = NumberFormat.getPercentInstance();
+
 
     public JButton getjButton() {
         return jButton;
@@ -78,14 +83,14 @@ public class Recommend_panel_2{
             optimized_rowData[i][1] = optimized_stockInfos.get(i).getWeight();
             optimized_rowData[i][2] = optimized_stockInfos.get(i).getStartDate();
             optimized_rowData[i][3] = optimized_stockInfos.get(i).getEndDate();
-            optimized_rowData[i][4] = optimized_stockInfos.get(i).getAnnualRate();
+            optimized_rowData[i][4] = percentInstance.format(optimized_stockInfos.get(i).getAnnualRate());
             optimized_rowData[i][5] = optimized_stockInfos.get(i).getRisk();
             optimized_rowData[i][6] = optimized_stockInfos.get(i).getBeta();
         }
 
         optimized_rowData[optimized_stockInfos.size()-1][0] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getTicker();
         optimized_rowData[optimized_stockInfos.size()-1][1] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getWeight();
-        optimized_rowData[optimized_stockInfos.size()-1][4] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getAnnualRate();
+        optimized_rowData[optimized_stockInfos.size()-1][4] = percentInstance.format(optimized_stockInfos.get(optimized_stockInfos.size()-1).getAnnualRate());
         optimized_rowData[optimized_stockInfos.size()-1][5] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getRisk();
         optimized_rowData[optimized_stockInfos.size()-1][6] = optimized_stockInfos.get(optimized_stockInfos.size()-1).getBeta();
 
@@ -134,13 +139,13 @@ public class Recommend_panel_2{
 
         // 设置表格内容颜色
         table2.setForeground(Color.BLACK);                   // 字体颜色
-        table2.setFont(new Font(null, Font.PLAIN, 14));      // 字体样式
+        table2.setFont(new Font(null, Font.PLAIN, 12));      // 字体样式
         table2.setSelectionForeground(Color.DARK_GRAY);      // 选中后字体颜色
         table2.setSelectionBackground(Color.LIGHT_GRAY);     // 选中后字体背景
         table2.setGridColor(Color.GRAY);                     // 网格颜色
 
         // 设置表头
-        table2.getTableHeader().setFont(new Font(null, Font.BOLD, 14));  // 设置表头名称字体样式
+        table2.getTableHeader().setFont(new Font(null, Font.BOLD, 12));  // 设置表头名称字体样式
         table2.getTableHeader().setForeground(Color.RED);                // 设置表头名称字体颜色
         table2.getTableHeader().setResizingAllowed(false);               // 设置不允许手动改变列宽
         table2.getTableHeader().setReorderingAllowed(false);             // 设置不允许拖动重新排序各列
@@ -149,16 +154,16 @@ public class Recommend_panel_2{
         table2.setRowHeight(30);
 
         // 第一列列宽设置为40
-        table2.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table2.getColumnModel().getColumn(0).setPreferredWidth(50);
 
         // 设置滚动面板视口大小（超过该大小的行数据，需要拖动滚动条才能看到）
-        table2.setPreferredScrollableViewportSize(new Dimension(900, 300));
+        table2.setPreferredScrollableViewportSize(new Dimension(930, 300));
 
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         scrollPane2 = new JScrollPane(table2);
 
-        scrollPane2.setLocation(50,440);
-        scrollPane2.setSize(900,300);
+        scrollPane2.setLocation(30,440);
+        scrollPane2.setSize(930,300);
 
         optimize = new JLabel("Optimized portfolio");
         optimize.setFont(new Font("TimesRoman",Font.BOLD,16));
@@ -179,7 +184,7 @@ public class Recommend_panel_2{
     public void init1(){
         panel = new JPanel(null);
         // 表头（列名）
-        columnNames = new Object[]{"Name", "Weight", "Start Date", "End Date", "Return Rate", "Risk", "β"};
+        columnNames = new Object[]{"Name", "Weight", "Start Date", "End Date", "Return Rate(annual)", "Risk", "β"};
 
         jButton = new JButton("Optimize portfolio");
         jButton.setFont(new Font("TimesRoman",Font.BOLD,16));
@@ -190,6 +195,8 @@ public class Recommend_panel_2{
         customize.setFont(new Font("TimesRoman",Font.BOLD,16));
         customize.setLocation(455,5);
         customize.setSize(170,50);
+
+        percentInstance.setMaximumFractionDigits(2); // 保留小数两位
 
 
         panel.add(jButton);
@@ -284,7 +291,7 @@ public class Recommend_panel_2{
                             }
                             calculated_stockInfos = panelService.getBatchInterest(stockInfos);
                             StockInfo portfolio = calculated_stockInfos.get(calculated_stockInfos.size()-1);
-                            tableModel.setValueAt(portfolio.getAnnualRate(),tableModel.getRowCount()-1,4);
+                            tableModel.setValueAt(percentInstance.format(portfolio.getAnnualRate()),tableModel.getRowCount()-1,4);
                             tableModel.setValueAt(portfolio.getRisk(),tableModel.getRowCount()-1,5);
                             tableModel.setValueAt(portfolio.getBeta(),tableModel.getRowCount()-1,6);
 
@@ -296,13 +303,13 @@ public class Recommend_panel_2{
 
         // 设置表格内容颜色
         table.setForeground(Color.BLACK);                   // 字体颜色
-        table.setFont(new Font(null, Font.PLAIN, 14));      // 字体样式
+        table.setFont(new Font(null, Font.PLAIN, 12));      // 字体样式
         table.setSelectionForeground(Color.DARK_GRAY);      // 选中后字体颜色
         table.setSelectionBackground(Color.LIGHT_GRAY);     // 选中后字体背景
         table.setGridColor(Color.GRAY);                     // 网格颜色
 
         // 设置表头
-        table.getTableHeader().setFont(new Font(null, Font.BOLD, 14));  // 设置表头名称字体样式
+        table.getTableHeader().setFont(new Font(null, Font.BOLD, 12));  // 设置表头名称字体样式
         table.getTableHeader().setForeground(Color.RED);                // 设置表头名称字体颜色
         table.getTableHeader().setResizingAllowed(false);               // 设置不允许手动改变列宽
         table.getTableHeader().setReorderingAllowed(false);             // 设置不允许拖动重新排序各列
@@ -311,16 +318,16 @@ public class Recommend_panel_2{
         table.setRowHeight(30);
 
         // 第一列列宽设置为40
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table.getColumnModel().getColumn(0).setPreferredWidth(50);
 
         // 设置滚动面板视口大小（超过该大小的行数据，需要拖动滚动条才能看到）
-        table.setPreferredScrollableViewportSize(new Dimension(900, 300));
+        table.setPreferredScrollableViewportSize(new Dimension(930, 300));
 
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         scrollPane = new JScrollPane(table);
 
-        scrollPane.setLocation(50,65);
-        scrollPane.setSize(900,300);
+        scrollPane.setLocation(30,65);
+        scrollPane.setSize(930,300);
 
         // 添加 滚动面板 到 内容面板
         panel.add(scrollPane);
@@ -348,7 +355,7 @@ public class Recommend_panel_2{
         rowData[rowIndex][1] =stockInfo.getWeight();
         rowData[rowIndex][2] =stockInfo.getStartDate();
         rowData[rowIndex][3] =stockInfo.getEndDate();
-        rowData[rowIndex][4] =stockInfo.getAnnualRate();
+        rowData[rowIndex][4] =percentInstance.format(stockInfo.getAnnualRate());
         rowData[rowIndex][5] =stockInfo.getRisk();
         rowData[rowIndex][6] =panelService.getStockBeta(stockInfo.getTicker(),stockInfo.getStartDate(),stockInfo.getEndDate());
     }

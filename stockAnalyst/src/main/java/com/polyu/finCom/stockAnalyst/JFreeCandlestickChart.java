@@ -81,7 +81,7 @@ public class JFreeCandlestickChart extends JPanel {
          */
         // Creating charts common dateAxis
         DateAxis dateAxis = new DateAxis("Time");
-        dateAxis.setDateFormatOverride(new SimpleDateFormat("YYYYMMDD"));
+        dateAxis.setDateFormatOverride(new SimpleDateFormat("YYYYMMdd"));
         // reduce the default left/right margin from 0.05 to 0.02
         dateAxis.setLowerMargin(0.02);
         dateAxis.setUpperMargin(0.02);
@@ -97,10 +97,12 @@ public class JFreeCandlestickChart extends JPanel {
         return chart;
     }
 
-    public void addCandel(Day day, double o, double h, double l, double c, long v) {
+    public void addCandel(Long day, double o, double h, double l, double c, long v) {
         try {
-            ohlcSeries.add(day, o, h, l, c);
-            volumeSeries.add(day, v);
+            FixedMillisecond t = new FixedMillisecond(day);
+            ohlcSeries.add(t, o, h, l, c);
+            volumeSeries.add(t, v);
+            System.out.println(t);
         } catch (Exception e) {
             e.printStackTrace();
         }

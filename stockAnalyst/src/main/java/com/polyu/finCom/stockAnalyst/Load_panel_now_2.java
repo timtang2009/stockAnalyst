@@ -5,6 +5,7 @@ import com.polyu.finCom.Model.StockInfo;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.text.NumberFormat;
 
 public class Load_panel_now_2 {
     public JPanel getjPanel() {
@@ -28,10 +29,14 @@ public class Load_panel_now_2 {
         this.stockInfo = stockInfo;
     }
 
+    //百分数
+    NumberFormat percentInstance = NumberFormat.getPercentInstance();
+
 
 
     private void init1(){
         jPanel = new JPanel(null);
+        percentInstance.setMaximumFractionDigits(2); // 保留小数两位
     }
 
     public void init2(){
@@ -50,13 +55,13 @@ public class Load_panel_now_2 {
     //文本反馈数据
     public void create_form(){
         // 表头（列名）
-        Object[] columnNames = new Object[]{"Name", "Start Date", "End Date", "Return Rate", "Risk", "Sharp ratio"};
+        Object[] columnNames = new Object[]{"Name", "Start Date", "End Date", "Return Rate(daily)", "Risk", "Sharp ratio"};
         Object[][] table_rowData = new Object[1][columnNames.length];
 
         table_rowData[0][0] = stockInfo.getTicker();
         table_rowData[0][1] = stockInfo.getStartDate();
         table_rowData[0][2] = stockInfo.getEndDate();
-        table_rowData[0][3] = stockInfo.getReturnRate();
+        table_rowData[0][3] = percentInstance.format(stockInfo.getReturnRate());
         table_rowData[0][4] = stockInfo.getRisk();
         table_rowData[0][5] = stockInfo.getSharpRatio();
 
