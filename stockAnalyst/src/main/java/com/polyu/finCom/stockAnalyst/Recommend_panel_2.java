@@ -11,6 +11,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -272,8 +274,10 @@ public class Recommend_panel_2{
                                 weight_sum = weight_sum + weight;
                             }
                         }
-                        tableModel.setValueAt(weight_sum,tableModel.getRowCount()-1,column);
-                        if (weight_sum == 1.0){
+                        BigDecimal b = new BigDecimal(weight_sum);
+                        double weight_sum_aprox = b.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        tableModel.setValueAt(weight_sum_aprox,tableModel.getRowCount()-1,column);
+                        if (weight_sum_aprox == 1.0){
                             for (int i = 0; i < stockInfos.size(); i++) {
                                 stockInfos.get(i).setWeight(Double.parseDouble(tableModel.getValueAt(i,column).toString()));
 
