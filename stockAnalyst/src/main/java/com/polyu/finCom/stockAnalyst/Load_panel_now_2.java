@@ -129,13 +129,13 @@ public class Load_panel_now_2 {
         table2.getColumnModel().getColumn(0).setPreferredWidth(40);
 
         // 设置滚动面板视口大小（超过该大小的行数据，需要拖动滚动条才能看到）
-        table2.setPreferredScrollableViewportSize(new Dimension(800, 200));
+        table2.setPreferredScrollableViewportSize(new Dimension(800, 100));
 
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         JScrollPane scrollPane2 = new JScrollPane(table2);
 
         scrollPane2.setLocation(200,550);
-        scrollPane2.setSize(800,200);
+        scrollPane2.setSize(800,100);
 
         jPanel.add(scrollPane2);
         jPanel.validate();

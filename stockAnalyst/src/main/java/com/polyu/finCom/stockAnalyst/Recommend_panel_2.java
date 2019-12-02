@@ -162,12 +162,12 @@ public class Recommend_panel_2{
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         scrollPane2 = new JScrollPane(table2);
 
-        scrollPane2.setLocation(30,440);
+        scrollPane2.setLocation(30,420);
         scrollPane2.setSize(930,300);
 
         optimize = new JLabel("Optimized portfolio");
         optimize.setFont(new Font("TimesRoman",Font.BOLD,16));
-        optimize.setLocation(455,380);
+        optimize.setLocation(455,365);
         optimize.setSize(170,50);
 
         panel.add(optimize);
@@ -326,7 +326,7 @@ public class Recommend_panel_2{
         // 把 表格 放到 滚动面板 中（表头将自动添加到滚动面板顶部）
         scrollPane = new JScrollPane(table);
 
-        scrollPane.setLocation(30,65);
+        scrollPane.setLocation(30,60);
         scrollPane.setSize(930,300);
 
         // 添加 滚动面板 到 内容面板

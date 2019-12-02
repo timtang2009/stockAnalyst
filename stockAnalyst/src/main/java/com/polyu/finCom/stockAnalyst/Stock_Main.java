@@ -111,7 +111,7 @@ public class Stock_Main implements ActionListener {
 
     public static void main(String[] args) {
         jFrame = new JFrame("Stock Analyst");
-        jFrame.setSize(1200,900);
+        jFrame.setSize(1200,800);
         jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Stock_Main stockMain = new Stock_Main();

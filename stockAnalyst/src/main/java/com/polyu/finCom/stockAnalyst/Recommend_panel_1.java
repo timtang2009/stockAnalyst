@@ -134,13 +134,13 @@ public class Recommend_panel_1 {
 
         //组件1：Stock list
         jScrollPane.setLocation(50,65);
-        jScrollPane.setSize(500,600);
+        jScrollPane.setSize(500,500);
 
         //组件2和3：RFR和RFR的Textfield
-        RFR.setLocation(270,695);
+        RFR.setLocation(270,595);
         RFR.setSize(180,50);
 
-        RFR_text.setLocation(470,695);
+        RFR_text.setLocation(470,595);
         RFR_text.setSize(100,50);
 
         // 组件4和5:ADD和DEL BUTTON
@@ -148,15 +148,15 @@ public class Recommend_panel_1 {
         add.setLocation(565,265);
         add.setSize(70,50);
         // DEL
-        del.setLocation(565,465);
+        del.setLocation(565,415);
         del.setSize(70,50);
 
         // 组件6：output stock list
         jScrollPane1.setLocation(650,65);
-        jScrollPane1.setSize(500,600);
+        jScrollPane1.setSize(500,500);
 
         // 组件7：Commit
-        commit.setLocation(680,695);
+        commit.setLocation(680,595);
         commit.setSize(100,50);
 
         // 组件8和9：Input and output list label
