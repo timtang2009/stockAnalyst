@@ -185,7 +185,6 @@ public class PanelService {
     }
 
     public List<StockInfo> getMatrix(List<StockInfo> condition) {
-        System.out.println("---------1"+LocalTime.now());
         SqlSession sqlSession = getSession();
         StockMapper mapper = sqlSession.getMapper(StockMapper.class);
         List<List<Double>> retData = new ArrayList<>();
@@ -196,7 +195,6 @@ public class PanelService {
                 .collect(Collectors.toList());
         List<String> dateRange = mapper.getDatesByRange(condition.get(0).getStartDate(), condition.get(0).getEndDate());
         List<String> dates = getCommonDates(conditionStocks, dateRange, mapper);
-        System.out.println("---------2"+LocalTime.now());
         for (StockInfo stockInfo : condition) {
             if (!"riskFree".equals(stockInfo.getTicker())) {
                 List<Double> stockRates = new ArrayList<>();
@@ -212,7 +210,6 @@ public class PanelService {
             }
             eFactor.add(stockInfo.getReturnRate() - stockInfo.getRiskFree()/250);
         }
-        System.out.println("---------3"+LocalTime.now());
         double[][] covRates = new double[condition.size()][condition.size()];
         if (retData.size() > 0) {
             for (int i = 0; i < condition.size(); i++) {
@@ -221,7 +218,6 @@ public class PanelService {
                 }
             }
         }
-        System.out.println("---------4"+LocalTime.now());
         double[][] retCov = calculator.getReverseMatrix(covRates, condition.size());
         List<StockInfo> reCondition = new ArrayList<>();
         List<Double> weights = new ArrayList<>();
@@ -234,7 +230,6 @@ public class PanelService {
             weights.add(slot);
             sum += slot;
         }
-        System.out.println("---------5"+LocalTime.now());
         for (int i = 0; i < condition.size(); i++) {
             condition.get(i).setWeight(weights.get(i) / sum);
         }
