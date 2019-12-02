@@ -33,6 +33,12 @@
         )
     </update>
 
+
+
+    <update id="createIndex">
+        CREATE INDEX log_cdate  ON  `stock`(`date`)
+    </update>
+
     <update id="createMarketTable" parameterType="string">
         CREATE TABLE IF NOT EXISTS ${table} (
                                                 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',

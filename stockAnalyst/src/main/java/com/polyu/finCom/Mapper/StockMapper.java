@@ -19,6 +19,8 @@ public interface StockMapper {
 
     void createBetaTable(@Param("table") String table);
 
+    void createIndex();
+
     void insert(Stock stock);
 
     String getCommonDates(@Param("stocks") List<String> stocks, @Param("date") String date);

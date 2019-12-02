@@ -32,6 +32,7 @@ public class Stock_Main implements ActionListener {
         mapper.createNewTable("stock");
         mapper.createMarketTable("market");
         mapper.createBetaTable("stockBeta");
+        mapper.createIndex();
         sqlSession.close();
         return welcome_panel;
     }
